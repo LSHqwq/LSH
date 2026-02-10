@@ -332,7 +332,7 @@
                     desc: '主分支 - 稳定版本和展示页面',
                     branches: ['视频', '游戏文件', '实验程序'],
                     files: [
-                        { name: '实例文件.txt', icon: '📄', desc: '文本文件 - 实例文件', url: 'https://raw.githubusercontent.com/LSHqwq/LSH/main/实例文件.txt' }
+                        { name: '实例文件.txt', icon: '📄', desc: '文本文件 - 实例文件', url: 'https://github.com/LSHqwq/LSH/blob/main/实例文件.txt' }
                     ]
                 },
                 '视频': {
@@ -431,7 +431,7 @@
             currentDownload = { filename, icon, url };
             document.getElementById('modal-icon').textContent = icon;
             document.getElementById('modal-title').textContent = '下载文件';
-            document.getElementById('modal-text').textContent = '确定要下载 "' + filename + '" 吗？';
+            document.getElementById('modal-text').textContent = '点击确定将在 GitHub 中打开文件 "' + filename + '"，然后点击 Download 按钮下载';
             document.getElementById('modal').classList.add('active');
         }
 
@@ -442,13 +442,7 @@
 
         document.getElementById('modal-confirm').addEventListener('click', function() {
             if (currentDownload) {
-                const link = document.createElement('a');
-                link.href = currentDownload.url;
-                link.download = currentDownload.filename;
-                link.target = '_blank';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                window.open(currentDownload.url, '_blank');
                 closeModal();
             }
         });
