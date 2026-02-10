@@ -332,8 +332,8 @@
                     desc: '主分支 - 稳定版本和展示页面',
                     branches: ['视频', '游戏文件', '实验程序'],
                     files: [
-                        { name: '示例文档.txt', icon: '📄', desc: '文本文件 - 示例文档', url: 'https://raw.githubusercontent.com/LSHqwq/LSH/main/示例文档.txt' },
-                        { name: '使用说明.md', icon: '📝', desc: 'Markdown文档 - 使用说明', url: 'https://raw.githubusercontent.com/LSHqwq/LSH/main/使用说明.md' }
+                        { name: '示例文档.txt', icon: '📄', desc: '文本文件 - 示例文档', url: 'https://github.com/LSHqwq/LSH/blob/main/示例文档.txt' },
+                        { name: '使用说明.md', icon: '📝', desc: 'Markdown文档 - 使用说明', url: 'https://github.com/LSHqwq/LSH/blob/main/使用说明.md' }
                     ]
                 },
                 '视频': {
@@ -342,8 +342,8 @@
                     desc: '视频文件分支 - 存储各类视频资源',
                     branches: [],
                     files: [
-                        { name: '示例视频.mp4', icon: '🎥', desc: 'MP4 视频 - 示例文件', url: 'https://github.com/LSHqwq/LSH/raw/视频/示例视频.mp4' },
-                        { name: '教程视频.mkv', icon: '�', desc: 'MKV 视频 - 教程内容', url: 'https://github.com/LSHqwq/LSH/raw/视频/教程视频.mkv' }
+                        { name: '示例视频.mp4', icon: '🎥', desc: 'MP4 视频 - 示例文件', url: 'https://github.com/LSHqwq/LSH/blob/视频/示例视频.mp4' },
+                        { name: '教程视频.mkv', icon: '📹', desc: 'MKV 视频 - 教程内容', url: 'https://github.com/LSHqwq/LSH/blob/视频/教程视频.mkv' }
                     ]
                 },
                 '游戏文件': {
@@ -352,8 +352,8 @@
                     desc: '游戏文件分支 - 游戏相关资源',
                     branches: [],
                     files: [
-                        { name: '游戏存档.zip', icon: '🎯', desc: 'ZIP 压缩包 - 游戏存档文件', url: 'https://github.com/LSHqwq/LSH/raw/游戏文件/游戏存档.zip' },
-                        { name: '游戏模组.pak', icon: '🎪', desc: 'PAK 文件 - 游戏模组', url: 'https://github.com/LSHqwq/LSH/raw/游戏文件/游戏模组.pak' }
+                        { name: '游戏存档.zip', icon: '🎯', desc: 'ZIP 压缩包 - 游戏存档文件', url: 'https://github.com/LSHqwq/LSH/blob/游戏文件/游戏存档.zip' },
+                        { name: '游戏模组.pak', icon: '🎪', desc: 'PAK 文件 - 游戏模组', url: 'https://github.com/LSHqwq/LSH/blob/游戏文件/游戏模组.pak' }
                     ]
                 },
                 '实验程序': {
@@ -362,8 +362,8 @@
                     desc: '实验程序分支 - 代码和程序文件',
                     branches: [],
                     files: [
-                        { name: 'main.py', icon: '🐍', desc: 'Python 脚本 - 主程序', url: 'https://github.com/LSHqwq/LSH/raw/实验程序/main.py' },
-                        { name: 'utils.js', icon: '📦', desc: 'JavaScript - 工具函数', url: 'https://github.com/LSHqwq/LSH/raw/实验程序/utils.js' }
+                        { name: 'main.py', icon: '🐍', desc: 'Python 脚本 - 主程序', url: 'https://github.com/LSHqwq/LSH/blob/实验程序/main.py' },
+                        { name: 'utils.js', icon: '📦', desc: 'JavaScript - 工具函数', url: 'https://github.com/LSHqwq/LSH/blob/实验程序/utils.js' }
                     ]
                 }
             },
@@ -441,7 +441,7 @@
             currentDownload = { filename, icon, url };
             document.getElementById('modal-icon').textContent = icon;
             document.getElementById('modal-title').textContent = '下载文件';
-            document.getElementById('modal-text').textContent = '确定要下载 "' + filename + '" 吗？';
+            document.getElementById('modal-text').textContent = '点击确定将在 GitHub 中打开文件 "' + filename + '"';
             document.getElementById('modal').classList.add('active');
         }
 
