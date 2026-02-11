@@ -445,10 +445,16 @@
             return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
         }
 
-        function directDownload() {
+        async function directDownload() {
             if (currentDownload) {
                 const rawUrl = getRawUrl(currentDownload.url);
-                window.open(rawUrl, '_blank');
+                const link = document.createElement('a');
+                link.href = rawUrl;
+                link.download = currentDownload.filename;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
                 closeModal();
             }
         }
