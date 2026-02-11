@@ -318,7 +318,8 @@
             <p id="modal-text">确定要下载此文件吗？</p>
             <div class="modal-buttons">
                 <button class="modal-btn secondary" onclick="closeModal()">取消</button>
-                <button class="modal-btn primary" id="modal-confirm">确定下载</button>
+                <button class="modal-btn primary" onclick="directDownload()">直接下载</button>
+                <button class="modal-btn" id="modal-confirm" style="background: #333; color: white;">GitHub 下载</button>
             </div>
         </div>
     </div>
@@ -431,13 +432,25 @@
             currentDownload = { filename, icon, url };
             document.getElementById('modal-icon').textContent = icon;
             document.getElementById('modal-title').textContent = '下载文件';
-            document.getElementById('modal-text').textContent = '点击确定将在 GitHub 中打开文件 "' + filename + '"，然后点击 Download 按钮下载';
+            document.getElementById('modal-text').innerHTML = '选择下载方式：<br><small>直接下载更快捷，GitHub 下载适用于大文件</small>';
             document.getElementById('modal').classList.add('active');
         }
 
         function closeModal() {
             document.getElementById('modal').classList.remove('active');
             currentDownload = null;
+        }
+
+        function getRawUrl(url) {
+            return url.replace('github.com', 'raw.githubusercontent.com').replace('/blob/', '/');
+        }
+
+        function directDownload() {
+            if (currentDownload) {
+                const rawUrl = getRawUrl(currentDownload.url);
+                window.open(rawUrl, '_blank');
+                closeModal();
+            }
         }
 
         document.getElementById('modal-confirm').addEventListener('click', function() {
