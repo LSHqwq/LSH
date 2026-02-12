@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LSH - 项目展示</title>
+    <title>LSH - Project Repository</title>
     <style>
         * {
             margin: 0;
@@ -11,42 +11,149 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%;
+            --bg-color: #f5f7fa;
+            --container-bg: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-muted: #888888;
+            --card-bg: #f8f9fa;
+            --card-hover: #e9ecef;
+            --border-color: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --modal-overlay: rgba(0, 0, 0, 0.5);
+        }
+
+        [data-theme="dark"] {
+            --primary-gradient: linear-gradient(135deg, #4a5fc7 0%, #5a3d80 100%);
+            --bg-color: #1a1a2e;
+            --container-bg: #16213e;
+            --text-primary: #e4e4e4;
+            --text-secondary: #b0b0b0;
+            --text-muted: #888888;
+            --card-bg: #0f3460;
+            --card-hover: #1a4a7a;
+            --border-color: #2d3f5f;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --modal-overlay: rgba(0, 0, 0, 0.7);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-color);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            transition: background 0.3s ease;
         }
 
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 1000px;
+            background: var(--container-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px var(--shadow);
+            max-width: 1100px;
             width: 100%;
             overflow: hidden;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             color: white;
-            padding: 40px;
+            padding: 50px 40px;
             text-align: center;
+            position: relative;
+        }
+
+        .header-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 10px;
             letter-spacing: 2px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-bar {
+            padding: 25px 40px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            font-size: 1rem;
+            background: var(--container-bg);
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
 
         .breadcrumb {
             padding: 20px 40px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
         }
 
         .breadcrumb-item {
@@ -55,6 +162,7 @@
             text-decoration: none;
             font-weight: 500;
             cursor: pointer;
+            transition: all 0.3s;
         }
 
         .breadcrumb-item:hover {
@@ -63,7 +171,7 @@
 
         .breadcrumb-separator {
             margin: 0 10px;
-            color: #999;
+            color: var(--text-muted);
         }
 
         .content {
@@ -71,8 +179,8 @@
         }
 
         .section h2 {
-            font-size: 1.6rem;
-            color: #333;
+            font-size: 1.7rem;
+            color: var(--text-primary);
             margin-bottom: 25px;
             padding-bottom: 10px;
             border-bottom: 3px solid #667eea;
@@ -81,38 +189,44 @@
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
         }
 
         .card {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 18px;
             transition: all 0.3s;
             cursor: pointer;
             text-decoration: none;
             display: block;
+            animation: fadeIn 0.5s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px var(--shadow);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .card-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2.8rem;
+            margin-bottom: 12px;
         }
 
         .card h3 {
             color: #667eea;
             margin-bottom: 8px;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
         }
 
         .card p {
-            color: #666;
+            color: var(--text-secondary);
             font-size: 0.95rem;
         }
 
@@ -121,48 +235,64 @@
         }
 
         .file-item {
-            background: #f8f9fa;
-            padding: 20px 25px;
-            border-radius: 12px;
-            margin-bottom: 12px;
+            background: var(--card-bg);
+            padding: 22px 28px;
+            border-radius: 16px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: all 0.3s;
             cursor: pointer;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .file-item:hover {
-            background: #e9ecef;
+            background: var(--card-hover);
             transform: translateX(5px);
+        }
+
+        .file-item.hidden {
+            display: none;
         }
 
         .file-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 18px;
         }
 
         .file-icon {
-            font-size: 2rem;
+            font-size: 2.2rem;
         }
 
         .file-name {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 600;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .file-desc {
-            color: #888;
+            color: var(--text-muted);
             font-size: 0.9rem;
-            margin-top: 3px;
+            margin-top: 4px;
         }
 
         .download-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             color: white;
-            padding: 10px 25px;
+            padding: 12px 28px;
             border-radius: 25px;
             font-weight: 600;
             text-decoration: none;
@@ -173,8 +303,8 @@
         }
 
         .download-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
         }
 
         .modal {
@@ -184,10 +314,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: var(--modal-overlay);
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            backdrop-filter: blur(5px);
         }
 
         .modal.active {
@@ -195,11 +326,11 @@
         }
 
         .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
+            background: var(--container-bg);
+            padding: 45px;
+            border-radius: 24px;
             text-align: center;
-            max-width: 400px;
+            max-width: 420px;
             width: 90%;
             animation: modalIn 0.3s ease;
         }
@@ -216,19 +347,20 @@
         }
 
         .modal-icon {
-            font-size: 4rem;
+            font-size: 4.5rem;
             margin-bottom: 20px;
         }
 
         .modal h3 {
-            font-size: 1.5rem;
-            color: #333;
+            font-size: 1.6rem;
+            color: var(--text-primary);
             margin-bottom: 15px;
         }
 
         .modal p {
-            color: #666;
+            color: var(--text-secondary);
             margin-bottom: 30px;
+            line-height: 1.6;
         }
 
         .modal-buttons {
@@ -238,7 +370,7 @@
         }
 
         .modal-btn {
-            padding: 12px 30px;
+            padding: 12px 32px;
             border-radius: 25px;
             font-weight: 600;
             cursor: pointer;
@@ -248,7 +380,7 @@
         }
 
         .modal-btn.primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--primary-gradient);
             color: white;
         }
 
@@ -257,19 +389,19 @@
         }
 
         .modal-btn.secondary {
-            background: #f0f0f0;
-            color: #333;
+            background: var(--card-bg);
+            color: var(--text-primary);
         }
 
         .modal-btn.secondary:hover {
-            background: #e0e0e0;
+            background: var(--card-hover);
         }
 
         .footer {
-            background: #f8f9fa;
-            padding: 25px;
+            background: var(--card-bg);
+            padding: 28px;
             text-align: center;
-            color: #666;
+            color: var(--text-muted);
         }
 
         .footer a {
@@ -277,17 +409,37 @@
             text-decoration: none;
         }
 
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .no-results-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 1.8rem;
+                font-size: 2rem;
             }
             .content {
                 padding: 30px 20px;
             }
+            .search-bar,
+            .breadcrumb {
+                padding: 20px;
+            }
             .file-item {
                 flex-direction: column;
                 text-align: center;
-                gap: 15px;
+                gap: 18px;
+            }
+            .header-controls {
+                position: static;
+                margin-top: 15px;
+                justify-content: center;
             }
         }
     </style>
@@ -295,8 +447,16 @@
 <body>
     <div class="container">
         <div class="header">
+            <div class="header-controls">
+                <button class="control-btn" onclick="toggleLanguage()" id="lang-btn">🌐 EN</button>
+                <button class="control-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+            </div>
             <h1 id="page-title">LSH</h1>
             <p id="page-subtitle">欢迎来到我的项目仓库</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" id="search-input" placeholder="搜索文件或分支..." oninput="searchFiles()">
         </div>
 
         <div class="breadcrumb" id="breadcrumb">
@@ -315,7 +475,7 @@
         <div class="modal-content">
             <div class="modal-icon" id="modal-icon">📥</div>
             <h3 id="modal-title">下载文件</h3>
-            <p id="modal-text">确定要下载此文件吗？</p>
+            <p id="modal-text">点击确定将在 GitHub 中打开此文件</p>
             <div class="modal-buttons">
                 <button class="modal-btn secondary" onclick="closeModal()">取消</button>
                 <button class="modal-btn primary" id="modal-confirm">GitHub 下载</button>
@@ -324,35 +484,76 @@
     </div>
 
     <script>
+        const i18n = {
+            zh: {
+                home: '🏠 首页',
+                searchPlaceholder: '搜索文件或分支...',
+                branchesTitle: '📂 分支导航',
+                filesTitle: '📁 文件列表',
+                download: '下载',
+                downloadTitle: '下载文件',
+                downloadText: '点击确定将在 GitHub 中打开此文件',
+                cancel: '取消',
+                githubDownload: 'GitHub 下载',
+                noResults: '未找到匹配结果',
+                footer: '由 GitHub 强力驱动',
+                welcome: '欢迎来到我的项目仓库',
+                mainDesc: '主分支 - 稳定版本和展示页面',
+                videoDesc: '视频文件分支 - 存储各类视频资源',
+                gameDesc: '游戏文件分支 - 游戏相关资源',
+                programDesc: '实验程序分支 - 代码和程序文件',
+                exampleFile: '文本文件 - 实例文件'
+            },
+            en: {
+                home: '🏠 Home',
+                searchPlaceholder: 'Search files or branches...',
+                branchesTitle: '📂 Branch Navigation',
+                filesTitle: '📁 File List',
+                download: 'Download',
+                downloadTitle: 'Download File',
+                downloadText: 'Click OK to open this file on GitHub',
+                cancel: 'Cancel',
+                githubDownload: 'GitHub Download',
+                noResults: 'No results found',
+                footer: 'Powered by GitHub',
+                welcome: 'Welcome to my project repository',
+                mainDesc: 'Main branch - Stable releases and showcase',
+                videoDesc: 'Video branch - Various video resources',
+                gameDesc: 'Game files branch - Game related resources',
+                programDesc: 'Experimental program branch - Code and program files',
+                exampleFile: 'Text file - Example file'
+            }
+        };
+
         const data = {
             branches: {
                 main: {
                     name: 'main',
                     icon: '🌿',
-                    desc: '主分支 - 稳定版本和展示页面',
+                    desc: { zh: '主分支 - 稳定版本和展示页面', en: 'Main branch - Stable releases and showcase' },
                     branches: ['视频', '游戏文件', '实验程序'],
                     files: [
-                        { name: '实例文件.txt', icon: '📄', desc: '文本文件 - 实例文件', url: 'https://github.com/LSHqwq/LSH/blob/main/实例文件.txt' }
+                        { name: '实例文件.txt', icon: '📄', desc: { zh: '文本文件 - 实例文件', en: 'Text file - Example file' }, url: 'https://github.com/LSHqwq/LSH/blob/main/实例文件.txt' }
                     ]
                 },
                 '视频': {
                     name: '视频',
                     icon: '🎬',
-                    desc: '视频文件分支 - 存储各类视频资源',
+                    desc: { zh: '视频文件分支 - 存储各类视频资源', en: 'Video branch - Various video resources' },
                     branches: [],
                     files: []
                 },
                 '游戏文件': {
                     name: '游戏文件',
                     icon: '🎮',
-                    desc: '游戏文件分支 - 游戏相关资源',
+                    desc: { zh: '游戏文件分支 - 游戏相关资源', en: 'Game files branch - Game related resources' },
                     branches: [],
                     files: []
                 },
                 '实验程序': {
                     name: '实验程序',
                     icon: '💻',
-                    desc: '实验程序分支 - 代码和程序文件',
+                    desc: { zh: '实验程序分支 - 代码和程序文件', en: 'Experimental program branch - Code and program files' },
                     branches: [],
                     files: []
                 }
@@ -360,7 +561,25 @@
             currentPath: ['main']
         };
 
+        let currentLang = 'zh';
         let currentDownload = null;
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            document.getElementById('lang-btn').textContent = currentLang === 'zh' ? '🌐 EN' : '🌐 中文';
+            renderPage();
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            document.getElementById('theme-btn').textContent = isDark ? '🌙' : '☀️';
+        }
+
+        function t(key) {
+            return i18n[currentLang][key];
+        }
 
         function goHome() {
             data.currentPath = ['main'];
@@ -372,7 +591,8 @@
             const branch = data.branches[branchName];
 
             document.getElementById('page-title').textContent = branch.icon + ' ' + branch.name;
-            document.getElementById('page-subtitle').textContent = branch.desc;
+            document.getElementById('page-subtitle').textContent = branch.desc[currentLang];
+            document.getElementById('search-input').placeholder = t('searchPlaceholder');
 
             renderBreadcrumb();
             renderContent(branch);
@@ -380,7 +600,7 @@
 
         function renderBreadcrumb() {
             const breadcrumb = document.getElementById('breadcrumb');
-            let html = '<span class="breadcrumb-item" onclick="goHome()">🏠 首页</span>';
+            let html = '<span class="breadcrumb-item" onclick="goHome()">' + t('home') + '</span>';
 
             if (data.currentPath.length > 1) {
                 for (let i = 1; i < data.currentPath.length; i++) {
@@ -401,22 +621,29 @@
         function renderContent(branch) {
             const content = document.getElementById('content');
             let html = '';
+            let hasContent = false;
 
             if (branch.branches.length > 0) {
-                html += '<div class="section"><h2>📂 分支导航</h2><div class="grid">';
+                html += '<div class="section"><h2>' + t('branchesTitle') + '</h2><div class="grid">';
                 branch.branches.forEach(b => {
                     const subBranch = data.branches[b];
-                    html += '<div class="card" onclick="openBranch(\'' + b + '\')"><div class="card-icon">' + subBranch.icon + '</div><h3>' + subBranch.name + '</h3><p>' + subBranch.desc + '</p></div>';
+                    html += '<div class="card" onclick="openBranch(\'' + b + '\')"><div class="card-icon">' + subBranch.icon + '</div><h3>' + subBranch.name + '</h3><p>' + subBranch.desc[currentLang] + '</p></div>';
                 });
                 html += '</div></div>';
+                hasContent = true;
             }
 
             if (branch.files.length > 0) {
-                html += '<div class="section"><h2>📁 文件列表</h2><div class="file-list">';
-                branch.files.forEach(file => {
-                    html += '<div class="file-item" onclick="showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')"><div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc + '</div></div></div><button class="download-btn" onclick="event.stopPropagation(); showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')">下载</button></div>';
+                html += '<div class="section"><h2>' + t('filesTitle') + '</h2><div class="file-list">';
+                branch.files.forEach((file, index) => {
+                    html += '<div class="file-item" data-index="' + index + '" onclick="showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')"><div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div><button class="download-btn" onclick="event.stopPropagation(); showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')">' + t('download') + '</button></div>';
                 });
                 html += '</div></div>';
+                hasContent = true;
+            }
+
+            if (!hasContent) {
+                html += '<div class="no-results"><div class="no-results-icon">📭</div><p>' + t('noResults') + '</p></div>';
             }
 
             content.innerHTML = html;
@@ -427,11 +654,39 @@
             renderPage();
         }
 
+        function searchFiles() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const fileItems = document.querySelectorAll('.file-item');
+            const cards = document.querySelectorAll('.card');
+
+            fileItems.forEach(item => {
+                const fileName = item.querySelector('.file-name').textContent.toLowerCase();
+                const fileDesc = item.querySelector('.file-desc').textContent.toLowerCase();
+                if (fileName.includes(searchTerm) || fileDesc.includes(searchTerm) || searchTerm === '') {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            cards.forEach(card => {
+                const cardTitle = card.querySelector('h3').textContent.toLowerCase();
+                const cardDesc = card.querySelector('p').textContent.toLowerCase();
+                if (cardTitle.includes(searchTerm) || cardDesc.includes(searchTerm) || searchTerm === '') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
         function showDownloadModal(filename, icon, url) {
             currentDownload = { filename, icon, url };
             document.getElementById('modal-icon').textContent = icon;
-            document.getElementById('modal-title').textContent = '下载文件';
-            document.getElementById('modal-text').textContent = '点击确定将在 GitHub 中打开文件 "' + filename + '"，然后点击 Download 按钮下载';
+            document.getElementById('modal-title').textContent = t('downloadTitle');
+            document.getElementById('modal-text').textContent = t('downloadText') + ' "' + filename + '"';
+            document.getElementById('modal-confirm').textContent = t('githubDownload');
+            document.querySelector('.modal-btn.secondary').textContent = t('cancel');
             document.getElementById('modal').classList.add('active');
         }
 
