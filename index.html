@@ -841,6 +841,140 @@
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
+        .game-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            height: 90vh;
+            max-height: 600px;
+            background: var(--container-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .game-container.active {
+            display: flex;
+        }
+
+        .game-header {
+            padding: 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .game-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .game-close:hover {
+            background: var(--card-hover);
+            color: var(--text-primary);
+        }
+
+        .game-body {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .game-canvas-container {
+            flex: 1;
+            background: #f0f0f0;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #gameCanvas {
+            background: #87CEEB;
+            border-radius: 8px;
+            cursor: crosshair;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .game-score {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .game-button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .game-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .game-button:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .game-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .game-overlay.active {
+            display: block;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 20px 16px;
@@ -974,6 +1108,24 @@
                     <div class="ai-tool-output-title">🔍 处理结果</div>
                     <div class="ai-tool-output-content" id="ai-tool-output">等待输入...</div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="game-overlay" id="game-overlay" onclick="closeGame()"></div>
+
+    <div class="game-container" id="game-container">
+        <div class="game-header">
+            <div class="game-title">🎮 射击游戏</div>
+            <button class="game-close" onclick="closeGame()">×</button>
+        </div>
+        <div class="game-body">
+            <div class="game-canvas-container">
+                <canvas id="gameCanvas" width="600" height="400"></canvas>
+            </div>
+            <div class="game-info">
+                <div class="game-score">得分: <span id="game-score">0</span></div>
+                <button class="game-button" id="game-start">开始游戏</button>
             </div>
         </div>
     </div>
@@ -1115,7 +1267,14 @@
                     icon: '🎮',
                     desc: { zh: '游戏文件', en: 'Game files' },
                     branches: [],
-                    files: []
+                    files: [
+                        {
+                            name: '想玩游戏吗？现在就可以',
+                            icon: '🎯',
+                            desc: { zh: '点击开始游戏', en: 'Click to play game' },
+                            url: 'javascript:openGame()'
+                        }
+                    ]
                 },
                 '实验程序': {
                     name: '实验程序',
@@ -1533,7 +1692,25 @@
         }
 
         function explainCode(code) {
-            return `## 代码解释\n\n**代码分析：**\n\n${code}\n\n**功能说明：**\n- 这段代码实现了...功能\n- 使用了${code.includes('function') ? '函数' : code.includes('class') ? '类' : '变量'}来处理数据\n- 通过${code.includes('if') ? '条件判断' : code.includes('for') ? '循环' : '其他方式'}实现逻辑\n\n**优化建议：**\n- 可以考虑使用更简洁的写法\n- 添加适当的注释提高可读性\n- 考虑错误处理机制`;
+            let language = '通用';
+            let features = [];
+            
+            if (code.includes('def ') || code.includes('import ') || code.includes('print(') || code.includes('python')) {
+                language = 'Python';
+                features.push('使用了Python语法');
+                if (code.includes('def ')) features.push('定义了函数');
+                if (code.includes('class ')) features.push('定义了类');
+                if (code.includes('import ')) features.push('导入了模块');
+                if (code.includes('print(')) features.push('包含输出语句');
+            } else if (code.includes('function ') || code.includes('const ') || code.includes('let ') || code.includes('console.log(') || code.includes('node')) {
+                language = 'JavaScript/Node.js';
+                features.push('使用了JavaScript语法');
+                if (code.includes('function ')) features.push('定义了函数');
+                if (code.includes('const ') || code.includes('let ')) features.push('声明了变量');
+                if (code.includes('console.log(')) features.push('包含控制台输出');
+            }
+            
+            return `## 代码解释\n\n**语言识别：** ${language}\n\n**代码分析：**\n\n${code}\n\n**功能说明：**\n- 这段代码实现了...功能\n- ${features.length > 0 ? features.join('\n- ') : '使用了基本编程结构'}\n- 通过${code.includes('if') ? '条件判断' : code.includes('for') || code.includes('while') ? '循环结构' : '其他方式'}实现逻辑\n\n**优化建议：**\n- 可以考虑使用更简洁的写法\n- 添加适当的注释提高可读性\n- 考虑错误处理机制\n- 遵循相应语言的最佳实践`;
         }
 
         function translateText(text) {
@@ -1572,6 +1749,158 @@
 
         renderPage();
         updateAiLanguage();
+        initGame();
+    }
+
+    function initGame() {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let score = 0;
+        let gameRunning = false;
+        let bullets = [];
+        let enemies = [];
+        let player = { x: canvas.width / 2, y: canvas.height - 50, width: 40, height: 40, speed: 5 };
+        let keys = {};
+
+        document.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        canvas.addEventListener('click', (e) => {
+            if (!gameRunning) return;
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            fireBullet(x, y);
+        });
+
+        function fireBullet(targetX, targetY) {
+            const angle = Math.atan2(targetY - player.y, targetX - player.x);
+            bullets.push({
+                x: player.x + player.width / 2,
+                y: player.y,
+                dx: Math.cos(angle) * 8,
+                dy: Math.sin(angle) * 8,
+                width: 4,
+                height: 10
+            });
+        }
+
+        function spawnEnemy() {
+            enemies.push({
+                x: Math.random() * (canvas.width - 30),
+                y: -30,
+                width: 30,
+                height: 30,
+                speed: 2 + Math.random() * 2
+            });
+        }
+
+        function update() {
+            if (!gameRunning) return;
+
+            if (keys['ArrowLeft'] && player.x > 0) {
+                player.x -= player.speed;
+            }
+            if (keys['ArrowRight'] && player.x < canvas.width - player.width) {
+                player.x += player.speed;
+            }
+
+            bullets.forEach((bullet, index) => {
+                bullet.x += bullet.dx;
+                bullet.y += bullet.dy;
+                if (bullet.x< 0 || bullet.x >canvas.width || bullet.y< 0 || bullet.y >canvas.height) {
+                    bullets.splice(index, 1);
+                }
+            });
+
+            enemies.forEach((enemy, index) => {
+                enemy.y += enemy.speed;
+                if (enemy.y > canvas.height) {
+                    enemies.splice(index, 1);
+                }
+            });
+
+            bullets.forEach((bullet, bulletIndex) => {
+                enemies.forEach((enemy, enemyIndex) => {
+                    if (bullet.x < enemy.x + enemy.width &&
+                        bullet.x + bullet.width > enemy.x &&
+                        bullet.y< enemy.y + enemy.height &&
+                        bullet.y + bullet.height >enemy.y) {
+                        bullets.splice(bulletIndex, 1);
+                        enemies.splice(enemyIndex, 1);
+                        score += 10;
+                        document.getElementById('game-score').textContent = score;
+                    }
+                });
+            });
+
+            if (Math.random()< 0.02) {
+                spawnEnemy();
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#32CD32';
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+
+            bullets.forEach(bullet => {
+                ctx.fillStyle = '#FFD700';
+                ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+            });
+
+            enemies.forEach(enemy => {
+                ctx.fillStyle = '#FF4500';
+                ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
+            });
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        window.openGame = function() {
+            document.getElementById('game-container').classList.add('active');
+            document.getElementById('game-overlay').classList.add('active');
+        }
+
+        window.closeGame = function() {
+            gameRunning = false;
+            document.getElementById('game-container').classList.remove('active');
+            document.getElementById('game-overlay').classList.remove('active');
+            score = 0;
+            bullets = [];
+            enemies = [];
+            player.x = canvas.width / 2;
+            document.getElementById('game-score').textContent = score;
+            document.getElementById('game-start').textContent = '开始游戏';
+        }
+
+        document.getElementById('game-start').addEventListener('click', function() {
+            if (!gameRunning) {
+                gameRunning = true;
+                this.textContent = '重新开始';
+                score = 0;
+                bullets = [];
+                enemies = [];
+                document.getElementById('game-score').textContent = score;
+            } else {
+                gameRunning = false;
+                this.textContent = '开始游戏';
+                bullets = [];
+                enemies = [];
+            }
+        });
+
+        gameLoop();
     </script>
 </body>
 </html>
