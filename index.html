@@ -1013,6 +1013,7 @@
                 aiWhoAmI: '我是AI助手，可以帮你解答关于这个网站的问题。',
                 aiHelp: '我可以帮你解答关于下载文件、切换语言、访问网站等问题。请直接提问吧！',
                 aiFeatures: '这个网站主要功能包括：文件下载、多语言支持、深色模式、AI助手和AI工具集。',
+                aiSiotLocation: 'SIoT_V2.zip 文件位于：实验程序 → 工具 文件夹中。',
                 aiToolTitle: '⚡ AI 工具集',
                 aiToolSummarize: '📝 文本总结',
                 aiToolCode: '💻 代码解释',
@@ -1067,6 +1068,7 @@
                 aiWhoAmI: 'I am an AI assistant that can help answer questions about this website.',
                 aiHelp: 'I can help answer questions about downloading files, switching languages, visiting the website, etc. Please ask directly!',
                 aiFeatures: 'This website includes features like: file downloads, multilingual support, dark mode, AI assistant, and AI toolkit.',
+                aiSiotLocation: 'The SIoT_V2.zip file is located in: Programs → Tools folder.',
                 aiToolTitle: '⚡ AI Toolkit',
                 aiToolSummarize: '📝 Text Summary',
                 aiToolCode: '💻 Code Explanation',
@@ -1369,6 +1371,8 @@
                 addAiMessage(t('aiHelp'));
             } else if (lowerMessage.includes('功能') || lowerMessage.includes('function') || lowerMessage.includes('feature')) {
                 addAiMessage(t('aiFeatures'));
+            } else if (lowerMessage.includes('siot') || lowerMessage.includes('iot')) {
+                addAiMessage(t('aiSiotLocation'));
             } else {
                 addAiMessage(t('aiError'));
             }
