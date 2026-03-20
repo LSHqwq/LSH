@@ -1130,7 +1130,7 @@
         </div>
     </div>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
     <script>
         const i18n = {
             zh: {
@@ -1752,247 +1752,180 @@
             }
         }
 
+        let phaserGame = null;
+        let gameScene = null;
+        let gameRunning = false;
+        let score = 0;
+        let gameSpeed = 5;
+
+        function initGame() {
+            const gameConfig = {
+                type: Phaser.CANVAS,
+                width: 600,
+                height: 400,
+                parent: 'gameCanvas',
+                physics: {
+                    default: 'arcade',
+                    arcade: {
+                        gravity: { y: 1000 },
+                        debug: false
+                    }
+                },
+                scene: {
+                    create: create,
+                    update: update
+                }
+            };
+
+            phaserGame = new Phaser.Game(gameConfig);
+        }
+
+        function create() {
+            gameScene = this;
+            
+            const sky = this.add.rectangle(300, 150, 600, 300, 0x87CEEB);
+            const ground = this.physics.add.staticGroup();
+            ground.create(300, 380, '').setScale(2).refreshBody();
+
+            this.player = this.physics.add.sprite(100, 300, '');
+            this.player.setCollideWorldBounds(true);
+            this.player.setScale(0.5);
+            this.player.body.setGravityY(1000);
+            this.player.setTint(0xFF6B6B);
+
+            this.obstacles = this.physics.add.group();
+            this.coins = this.physics.add.group();
+
+            this.physics.add.collider(this.player, ground);
+            this.physics.add.collider(this.player, this.obstacles, hitObstacle, null, this);
+            this.physics.add.overlap(this.player, this.coins, collectCoin, null, this);
+
+            this.scoreText = this.add.text(20, 20, '得分: 0', { fontSize: '24px', fill: '#ffffff', fontWeight: 'bold' });
+            this.speedText = this.add.text(580, 20, '速度: 1.0x', { fontSize: '24px', fill: '#ffffff', fontWeight: 'bold', align: 'right' });
+
+            this.input.keyboard.on('keydown-SPACE', () => {
+                if (gameRunning && this.player.body.touching.down) {
+                    this.player.setVelocityY(-500);
+                }
+            });
+
+            this.input.keyboard.on('keydown-UP', () => {
+                if (gameRunning && this.player.body.touching.down) {
+                    this.player.setVelocityY(-500);
+                }
+            });
+
+            this.input.on('pointerdown', () => {
+                if (!gameRunning) {
+                    startGame();
+                } else if (this.player.body.touching.down) {
+                    this.player.setVelocityY(-500);
+                }
+            });
+        }
+
+        function startGame() {
+            gameRunning = true;
+            score = 0;
+            gameSpeed = 5;
+            if (gameScene) {
+                gameScene.obstacles.clear(true, true);
+                gameScene.coins.clear(true, true);
+                gameScene.player.setPosition(100, 300);
+                gameScene.scoreText.setText('得分: 0');
+            }
+            document.getElementById('game-start').textContent = '重新开始';
+        }
+
+        function hitObstacle() {
+            gameRunning = false;
+            alert(`游戏结束！最终得分: ${score}`);
+            document.getElementById('game-start').textContent = '开始跑酷';
+        }
+
+        function collectCoin(player, coin) {
+            coin.disableBody(true, true);
+            score += 10;
+            if (gameScene) {
+                gameScene.scoreText.setText(`得分: ${score}`);
+            }
+        }
+
+        function update() {
+            if (!gameRunning) return;
+
+            gameSpeed += 0.001;
+            score += 0.1;
+            
+            if (gameScene) {
+                gameScene.scoreText.setText(`得分: ${Math.floor(score)}`);
+                gameScene.speedText.setText(`速度: ${(gameSpeed / 5).toFixed(1)}x`);
+
+                gameScene.obstacles.getChildren().forEach(obstacle => {
+                    obstacle.x -= gameSpeed;
+                    if (obstacle.x< -50) {
+                        obstacle.destroy();
+                    }
+                });
+
+                gameScene.coins.getChildren().forEach(coin =>{
+                    coin.x -= gameSpeed;
+                    if (coin.x < -20) {
+                        coin.destroy();
+                    }
+                });
+
+                if (Phaser.Math.Between(0, 100)< 1 && gameScene.obstacles.getChildren().length < 3) {
+                    const obstacleType = Phaser.Math.Between(0, 2);
+                    let obstacle;
+                    
+                    if (obstacleType === 0) {
+                        obstacle = gameScene.obstacles.create(650, 350, '').setScale(0.3, 0.6);
+                        obstacle.setTint(0x8B4513);
+                    } else if (obstacleType === 1) {
+                        obstacle = gameScene.obstacles.create(650, 370, '').setScale(0.6, 0.3);
+                        obstacle.setTint(0x654321);
+                    } else {
+                        obstacle = gameScene.obstacles.create(650, 330, '').setScale(0.2, 0.8);
+                        obstacle.setTint(0xA0522D);
+                    }
+                    
+                    obstacle.setImmovable(true);
+                }
+
+                if (Phaser.Math.Between(0, 200)< 1 && gameScene.coins.getChildren().length < 2) {
+                    const coin = gameScene.coins.create(650, Phaser.Math.Between(200, 300), '');
+                    coin.setScale(0.15);
+                    coin.setTint(0xFFD700);
+                }
+            }
+        }
+
+        window.openGame = function() {
+            document.getElementById('game-container').classList.add('active');
+            document.getElementById('game-overlay').classList.add('active');
+        }
+
+        window.closeGame = function() {
+            gameRunning = false;
+            document.getElementById('game-container').classList.remove('active');
+            document.getElementById('game-overlay').classList.remove('active');
+            document.getElementById('game-start').textContent = '开始跑酷';
+        }
+
+        document.getElementById('game-start').addEventListener('click', function() {
+            if (!gameRunning) {
+                startGame();
+                this.textContent = '重新开始';
+            } else {
+                gameRunning = false;
+                this.textContent = '开始跑酷';
+            }
+        });
+
         renderPage();
         updateAiLanguage();
         initGame();
-
-        function initGame() {
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            let score = 0;
-            let gameRunning = false;
-            let obstacles = [];
-            let coins = [];
-            let player = { 
-                x: 100, 
-                y: canvas.height - 60, 
-                width: 40, 
-                height: 40, 
-                velocityY: 0,
-                onGround: true,
-                jumping: false
-            };
-            let keys = {};
-            let gameSpeed = 5;
-            let groundY = canvas.height - 60;
-            let lastObstacleTime = 0;
-            let lastCoinTime = 0;
-
-            document.addEventListener('keydown', (e) => {
-                keys[e.key] = true;
-                if ((e.key === ' ' || e.key === 'ArrowUp') && gameRunning && player.onGround) {
-                    player.jumping = true;
-                    player.onGround = false;
-                    player.velocityY = -15;
-                }
-            });
-
-            document.addEventListener('keyup', (e) => {
-                keys[e.key] = false;
-            });
-
-            canvas.addEventListener('click', () => {
-                if (!gameRunning) return;
-                if (player.onGround) {
-                    player.jumping = true;
-                    player.onGround = false;
-                    player.velocityY = -15;
-                }
-            });
-
-            function spawnObstacle() {
-                const obstacleTypes = [
-                    { width: 30, height: 60, color: '#8B4513' },
-                    { width: 60, height: 30, color: '#654321' },
-                    { width: 20, height: 80, color: '#A0522D' }
-                ];
-                
-                const type = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
-                obstacles.push({
-                    x: canvas.width,
-                    y: groundY - type.height,
-                    width: type.width,
-                    height: type.height,
-                    color: type.color
-                });
-            }
-
-            function spawnCoin() {
-                coins.push({
-                    x: canvas.width,
-                    y: groundY - 80 - Math.random() * 40,
-                    size: 15,
-                    color: '#FFD700',
-                    collected: false
-                });
-            }
-
-            function update() {
-                if (!gameRunning) return;
-
-                score += 0.1;
-                document.getElementById('game-score').textContent = Math.floor(score);
-
-                gameSpeed += 0.001;
-
-                player.velocityY += 0.8;
-                player.y += player.velocityY;
-
-                if (player.y >= groundY) {
-                    player.y = groundY;
-                    player.velocityY = 0;
-                    player.onGround = true;
-                    player.jumping = false;
-                }
-
-                obstacles.forEach((obstacle, index) => {
-                    obstacle.x -= gameSpeed;
-                    
-                    if (obstacle.x + obstacle.width< 0) {
-                        obstacles.splice(index, 1);
-                    }
-
-                    if (player.x + player.width >obstacle.x &&
-                        player.x< obstacle.x + obstacle.width &&
-                        player.y + player.height >obstacle.y) {
-                        gameOver();
-                        return;
-                    }
-                });
-
-                coins.forEach((coin, index) =>{
-                    coin.x -= gameSpeed;
-                    
-                    if (coin.x + coin.size< 0) {
-                        coins.splice(index, 1);
-                    }
-
-                    if (!coin.collected && 
-                        player.x + player.width >coin.x &&
-                        player.x< coin.x + coin.size &&
-                        player.y + player.height >coin.y &&
-                        player.y< coin.y + coin.size) {
-                        coin.collected = true;
-                        score += 10;
-                        coins.splice(index, 1);
-                    }
-                });
-
-                const now = Date.now();
-                if (now - lastObstacleTime > 1500 - gameSpeed * 20) {
-                    spawnObstacle();
-                    lastObstacleTime = now;
-                }
-
-                if (now - lastCoinTime > 2000) {
-                    spawnCoin();
-                    lastCoinTime = now;
-                }
-            }
-
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = '#87CEEB';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = '#90EE90';
-                ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
-
-                for (let i = 0; i< canvas.width; i += 50) {
-                    ctx.fillStyle = '#228B22';
-                    ctx.fillRect(i, groundY + 10, 25, 2);
-                }
-
-                ctx.fillStyle = '#FF6B6B';
-                ctx.fillRect(player.x, player.y, player.width, player.height);
-
-                obstacles.forEach(obstacle =>{
-                    ctx.fillStyle = obstacle.color;
-                    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                });
-
-                coins.forEach(coin =>{
-                    ctx.fillStyle = coin.color;
-                    ctx.beginPath();
-                    ctx.arc(coin.x + coin.size / 2, coin.y + coin.size / 2, coin.size / 2, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 24px Arial';
-                ctx.textAlign = 'left';
-                ctx.fillText(`得分: ${Math.floor(score)}`, 20, 40);
-                ctx.textAlign = 'right';
-                ctx.fillText(`速度: ${Math.floor(gameSpeed * 10) / 10}x`, canvas.width - 20, 40);
-            }
-
-            function gameOver() {
-                gameRunning = false;
-                alert(`游戏结束！最终得分: ${Math.floor(score)}`);
-                document.getElementById('game-start').textContent = '开始跑酷';
-                score = 0;
-                obstacles = [];
-                coins = [];
-                player.x = 100;
-                player.y = groundY;
-                player.velocityY = 0;
-                player.onGround = true;
-                player.jumping = false;
-                gameSpeed = 5;
-                lastObstacleTime = 0;
-                lastCoinTime = 0;
-                document.getElementById('game-score').textContent = '0';
-            }
-
-            function gameLoop() {
-                update();
-                draw();
-                requestAnimationFrame(gameLoop);
-            }
-
-            window.openGame = function() {
-                document.getElementById('game-container').classList.add('active');
-                document.getElementById('game-overlay').classList.add('active');
-            }
-
-            window.closeGame = function() {
-                gameRunning = false;
-                document.getElementById('game-container').classList.remove('active');
-                document.getElementById('game-overlay').classList.remove('active');
-                score = 0;
-                obstacles = [];
-                coins = [];
-                player.x = 100;
-                player.y = groundY;
-                player.velocityY = 0;
-                player.onGround = true;
-                player.jumping = false;
-                gameSpeed = 5;
-                lastObstacleTime = 0;
-                lastCoinTime = 0;
-                document.getElementById('game-score').textContent = '0';
-                document.getElementById('game-start').textContent = '开始跑酷';
-            }
-
-            document.getElementById('game-start').addEventListener('click', function() {
-                if (!gameRunning) {
-                    gameRunning = true;
-                    this.textContent = '重新开始';
-                    score = 0;
-                    obstacles = [];
-                    coins = [];
-                    document.getElementById('game-score').textContent = '0';
-                } else {
-                    gameRunning = false;
-                    this.textContent = '开始跑酷';
-                    obstacles = [];
-                    coins = [];
-                }
-            });
-
-            gameLoop();
-        }
     </script>
 </body>
 </html>
