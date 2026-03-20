@@ -1116,9 +1116,9 @@
 
     <div class="game-container" id="game-container">
         <div class="game-header">
-            <div class="game-title">🎮 射击游戏</div>
-            <button class="game-close" onclick="closeGame()">×</button>
-        </div>
+                <div class="game-title">� 跑酷游戏</div>
+                <button class="game-close" onclick="closeGame()">×</button>
+            </div>
         <div class="game-body">
             <div class="game-canvas-container">
                 <canvas id="gameCanvas" width="600" height="400"></canvas>
@@ -1269,9 +1269,9 @@
                     branches: [],
                     files: [
                         {
-                            name: '想玩游戏吗？现在就可以',
-                            icon: '🎯',
-                            desc: { zh: '点击开始游戏', en: 'Click to play game' },
+                            name: '跑酷游戏',
+                            icon: '�',
+                            desc: { zh: '点击开始跑酷', en: 'Click to play runner' },
                             url: 'javascript:openGame()'
                         }
                     ]
@@ -1377,7 +1377,7 @@
                 html += '<div class="file-list">';
                 branch.files.forEach(file => {
                     if (file.url === 'javascript:openGame()') {
-                        html += '<div class="file-item" onclick="openGame()"><div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div><button class="download-btn" onclick="event.stopPropagation(); openGame()">开始游戏</button></div>';
+                        html += '<div class="file-item" onclick="openGame()"><div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div><button class="download-btn" onclick="event.stopPropagation(); openGame()">开始跑酷</button></div>';
                     } else {
                         html += '<div class="file-item" onclick="showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')"><div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div><button class="download-btn" onclick="event.stopPropagation(); showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')">' + t('download') + '</button></div>';
                     }
@@ -1760,27 +1760,30 @@
             const ctx = canvas.getContext('2d');
             let score = 0;
             let gameRunning = false;
-            let bullets = [];
-            let enemies = [];
-            let particles = [];
+            let obstacles = [];
+            let coins = [];
             let player = { 
-                x: canvas.width / 2, 
+                x: 100, 
                 y: canvas.height - 60, 
-                width: 50, 
-                height: 50, 
-                speed: 7,
-                lives: 3,
-                invincible: false
+                width: 40, 
+                height: 40, 
+                velocityY: 0,
+                onGround: true,
+                jumping: false,
+                speed: 6
             };
             let keys = {};
-            let difficulty = 1;
-            let wave = 1;
-            let enemiesKilled = 0;
+            let gameSpeed = 5;
+            let groundY = canvas.height - 60;
+            let lastObstacleTime = 0;
+            let lastCoinTime = 0;
 
             document.addEventListener('keydown', (e) => {
                 keys[e.key] = true;
-                if (e.key === ' ' && gameRunning) {
-                    fireBullet(player.x + player.width / 2, player.y);
+                if ((e.key === ' ' || e.key === 'ArrowUp') && gameRunning && player.onGround) {
+                    player.jumping = true;
+                    player.onGround = false;
+                    player.velocityY = -15;
                 }
             });
 
@@ -1788,146 +1791,102 @@
                 keys[e.key] = false;
             });
 
-            canvas.addEventListener('click', (e) => {
+            canvas.addEventListener('click', () => {
                 if (!gameRunning) return;
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                fireBullet(x, y);
+                if (player.onGround) {
+                    player.jumping = true;
+                    player.onGround = false;
+                    player.velocityY = -15;
+                }
             });
 
-            function createParticle(x, y, color) {
-                particles.push({
-                    x: x,
-                    y: y,
-                    vx: (Math.random() - 0.5) * 6,
-                    vy: (Math.random() - 0.5) * 6,
-                    size: Math.random() * 4 + 2,
-                    color: color,
-                    life: 30,
-                    maxLife: 30
-                });
-            }
-
-            function fireBullet(targetX, targetY) {
-                const angle = Math.atan2(targetY - player.y, targetX - player.x);
-                bullets.push({
-                    x: player.x + player.width / 2,
-                    y: player.y,
-                    dx: Math.cos(angle) * 10,
-                    dy: Math.sin(angle) * 10,
-                    width: 6,
-                    height: 12,
-                    color: '#FFD700'
-                });
-                
-                createParticle(player.x + player.width / 2, player.y, '#FFD700');
-            }
-
-            function spawnEnemy() {
-                const enemyTypes = [
-                    { width: 30, height: 30, speed: 2 + Math.random() * 2, color: '#FF4500', points: 10 },
-                    { width: 40, height: 40, speed: 1.5 + Math.random() * 1.5, color: '#FF6B6B', points: 20 },
-                    { width: 25, height: 25, speed: 3 + Math.random() * 2, color: '#FFA500', points: 30 }
+            function spawnObstacle() {
+                const obstacleTypes = [
+                    { width: 30, height: 60, color: '#8B4513' },
+                    { width: 60, height: 30, color: '#654321' },
+                    { width: 20, height: 80, color: '#A0522D' }
                 ];
                 
-                const typeIndex = Math.min(Math.floor(Math.random() * (difficulty / 2 + 1)), enemyTypes.length - 1);
-                const enemyType = enemyTypes[typeIndex];
-                
-                enemies.push({
-                    x: Math.random() * (canvas.width - enemyType.width),
-                    y: -enemyType.height,
-                    width: enemyType.width,
-                    height: enemyType.height,
-                    speed: enemyType.speed * difficulty,
-                    color: enemyType.color,
-                    points: enemyType.points,
-                    health: typeIndex + 1
+                const type = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+                obstacles.push({
+                    x: canvas.width,
+                    y: groundY - type.height,
+                    width: type.width,
+                    height: type.height,
+                    color: type.color
+                });
+            }
+
+            function spawnCoin() {
+                coins.push({
+                    x: canvas.width,
+                    y: groundY - 80 - Math.random() * 40,
+                    size: 15,
+                    color: '#FFD700',
+                    collected: false
                 });
             }
 
             function update() {
                 if (!gameRunning) return;
 
-                if (keys['ArrowLeft'] && player.x > 0) {
-                    player.x -= player.speed;
+                score += 0.1;
+                document.getElementById('game-score').textContent = Math.floor(score);
+
+                gameSpeed += 0.001;
+
+                player.velocityY += 0.8;
+                player.y += player.velocityY;
+
+                if (player.y >= groundY) {
+                    player.y = groundY;
+                    player.velocityY = 0;
+                    player.onGround = true;
+                    player.jumping = false;
                 }
-                if (keys['ArrowRight'] && player.x< canvas.width - player.width) {
-                    player.x += player.speed;
+
+                obstacles.forEach((obstacle, index) => {
+                    obstacle.x -= gameSpeed;
+                    
+                    if (obstacle.x + obstacle.width< 0) {
+                        obstacles.splice(index, 1);
+                    }
+
+                    if (player.x + player.width >obstacle.x &&
+                        player.x< obstacle.x + obstacle.width &&
+                        player.y + player.height >obstacle.y) {
+                        gameOver();
+                        return;
+                    }
+                });
+
+                coins.forEach((coin, index) =>{
+                    coin.x -= gameSpeed;
+                    
+                    if (coin.x + coin.size< 0) {
+                        coins.splice(index, 1);
+                    }
+
+                    if (!coin.collected && 
+                        player.x + player.width >coin.x &&
+                        player.x< coin.x + coin.size &&
+                        player.y + player.height >coin.y &&
+                        player.y< coin.y + coin.size) {
+                        coin.collected = true;
+                        score += 10;
+                        coins.splice(index, 1);
+                    }
+                });
+
+                const now = Date.now();
+                if (now - lastObstacleTime > 1500 - gameSpeed * 20) {
+                    spawnObstacle();
+                    lastObstacleTime = now;
                 }
 
-                bullets.forEach((bullet, index) =>{
-                    bullet.x += bullet.dx;
-                    bullet.y += bullet.dy;
-                    if (bullet.x < 0 || bullet.x >canvas.width || bullet.y< 0 || bullet.y >canvas.height) {
-                        bullets.splice(index, 1);
-                    }
-                });
-
-                enemies.forEach((enemy, index) => {
-                    enemy.y += enemy.speed;
-                    
-                    if (enemy.y > canvas.height) {
-                        enemies.splice(index, 1);
-                        if (!player.invincible) {
-                            player.lives--;
-                            player.invincible = true;
-                            setTimeout(() => {
-                                player.invincible = false;
-                            }, 2000);
-                            if (player.lives<= 0) {
-                                gameOver();
-                                return;
-                            }
-                        }
-                    }
-                });
-
-                bullets.forEach((bullet, bulletIndex) =>{
-                    enemies.forEach((enemy, enemyIndex) =>{
-                        if (bullet.x< enemy.x + enemy.width &&
-                            bullet.x + bullet.width >enemy.x &&
-                            bullet.y< enemy.y + enemy.height &&
-                            bullet.y + bullet.height >enemy.y) {
-                            bullets.splice(bulletIndex, 1);
-                            enemy.health--;
-                            
-                            for (let i = 0; i< 3; i++) {
-                                createParticle(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, enemy.color);
-                            }
-                            
-                            if (enemy.health <= 0) {
-                                enemies.splice(enemyIndex, 1);
-                                score += enemy.points;
-                                enemiesKilled++;
-                                document.getElementById('game-score').textContent = score;
-                                
-                                for (let i = 0; i < 8; i++) {
-                                    createParticle(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, enemy.color);
-                                }
-                                
-                                if (enemiesKilled >= 10 * wave) {
-                                    wave++;
-                                    difficulty += 0.5;
-                                    alert(`第 ${wave} 波开始！难度提升！`);
-                                }
-                            }
-                        }
-                    });
-                });
-
-                particles.forEach((particle, index) => {
-                    particle.x += particle.vx;
-                    particle.y += particle.vy;
-                    particle.life--;
-                    
-                    if (particle.life<= 0) {
-                        particles.splice(index, 1);
-                    }
-                });
-
-                if (Math.random() < 0.02 * difficulty) {
-                    spawnEnemy();
+                if (now - lastCoinTime > 2000) {
+                    spawnCoin();
+                    lastCoinTime = now;
                 }
             }
 
@@ -1937,73 +1896,53 @@
                 ctx.fillStyle = '#87CEEB';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                for (let i = 0; i< canvas.width; i += 20) {
-                    for (let j = 0; j < canvas.height; j += 20) {
-                        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-                        ctx.fillRect(i, j, 10, 1);
-                    }
+                ctx.fillStyle = '#90EE90';
+                ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+
+                for (let i = 0; i< canvas.width; i += 50) {
+                    ctx.fillStyle = '#228B22';
+                    ctx.fillRect(i, groundY + 10, 25, 2);
                 }
 
-                if (!player.invincible || Math.floor(Date.now() / 100) % 2 === 0) {
-                    ctx.fillStyle = '#32CD32';
-                    ctx.beginPath();
-                    ctx.moveTo(player.x + player.width / 2, player.y);
-                    ctx.lineTo(player.x + player.width, player.y + player.height);
-                    ctx.lineTo(player.x, player.y + player.height);
-                    ctx.closePath();
-                    ctx.fill();
-                }
+                ctx.fillStyle = '#FF6B6B';
+                ctx.fillRect(player.x, player.y, player.width, player.height);
 
-                bullets.forEach(bullet =>{
-                    ctx.fillStyle = bullet.color;
-                    ctx.beginPath();
-                    ctx.arc(bullet.x + bullet.width / 2, bullet.y + bullet.height / 2, bullet.width / 2, 0, Math.PI * 2);
-                    ctx.fill();
+                obstacles.forEach(obstacle =>{
+                    ctx.fillStyle = obstacle.color;
+                    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
                 });
 
-                enemies.forEach(enemy => {
-                    ctx.fillStyle = enemy.color;
+                coins.forEach(coin =>{
+                    ctx.fillStyle = coin.color;
                     ctx.beginPath();
-                    ctx.rect(enemy.x, enemy.y, enemy.width, enemy.height);
-                    ctx.fill();
-                    
-                    ctx.fillStyle = 'white';
-                    ctx.font = '10px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(enemy.health, enemy.x + enemy.width / 2, enemy.y + enemy.height / 2 + 3);
-                });
-
-                particles.forEach(particle => {
-                    const alpha = particle.life / particle.maxLife;
-                    ctx.fillStyle = `${particle.color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`;
-                    ctx.beginPath();
-                    ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    ctx.arc(coin.x + coin.size / 2, coin.y + coin.size / 2, coin.size / 2, 0, Math.PI * 2);
                     ctx.fill();
                 });
 
                 ctx.fillStyle = 'white';
-                ctx.font = '16px Arial';
+                ctx.font = 'bold 24px Arial';
                 ctx.textAlign = 'left';
-                ctx.fillText(`生命: ${player.lives}`, 10, 30);
+                ctx.fillText(`得分: ${Math.floor(score)}`, 20, 40);
                 ctx.textAlign = 'right';
-                ctx.fillText(`波数: ${wave}`, canvas.width - 10, 30);
+                ctx.fillText(`速度: ${Math.floor(gameSpeed * 10) / 10}x`, canvas.width - 20, 40);
             }
 
             function gameOver() {
                 gameRunning = false;
-                alert(`游戏结束！最终得分: ${score}`);
-                document.getElementById('game-start').textContent = '开始游戏';
+                alert(`游戏结束！最终得分: ${Math.floor(score)}`);
+                document.getElementById('game-start').textContent = '开始跑酷';
                 score = 0;
-                bullets = [];
-                enemies = [];
-                particles = [];
-                player.x = canvas.width / 2;
-                player.lives = 3;
-                player.invincible = false;
-                difficulty = 1;
-                wave = 1;
-                enemiesKilled = 0;
-                document.getElementById('game-score').textContent = score;
+                obstacles = [];
+                coins = [];
+                player.x = 100;
+                player.y = groundY;
+                player.velocityY = 0;
+                player.onGround = true;
+                player.jumping = false;
+                gameSpeed = 5;
+                lastObstacleTime = 0;
+                lastCoinTime = 0;
+                document.getElementById('game-score').textContent = '0';
             }
 
             function gameLoop() {
@@ -2034,14 +1973,14 @@
                     gameRunning = true;
                     this.textContent = '重新开始';
                     score = 0;
-                    bullets = [];
-                    enemies = [];
-                    document.getElementById('game-score').textContent = score;
+                    obstacles = [];
+                    coins = [];
+                    document.getElementById('game-score').textContent = '0';
                 } else {
                     gameRunning = false;
-                    this.textContent = '开始游戏';
-                    bullets = [];
-                    enemies = [];
+                    this.textContent = '开始跑酷';
+                    obstacles = [];
+                    coins = [];
                 }
             });
 
