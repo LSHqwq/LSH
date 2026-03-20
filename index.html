@@ -1014,6 +1014,7 @@
                 aiHelp: '我可以帮你解答关于下载文件、切换语言、访问网站等问题。请直接提问吧！',
                 aiFeatures: '这个网站主要功能包括：文件下载、多语言支持、深色模式、AI助手和AI工具集。',
                 aiSiotLocation: 'SIoT_V2.zip 文件位于：实验程序 → 工具 文件夹中。',
+                aiSiotFunction: 'SIoT是一个简单的物联网平台，主要功能包括：\n1. 数据采集和存储\n2. 设备管理和监控\n3. MQTT消息通信\n4. 可视化数据展示\n5. 支持Python编程控制\n适用于物联网实验和教学场景。',
                 aiToolTitle: '⚡ AI 工具集',
                 aiToolSummarize: '📝 文本总结',
                 aiToolCode: '💻 代码解释',
@@ -1069,6 +1070,7 @@
                 aiHelp: 'I can help answer questions about downloading files, switching languages, visiting the website, etc. Please ask directly!',
                 aiFeatures: 'This website includes features like: file downloads, multilingual support, dark mode, AI assistant, and AI toolkit.',
                 aiSiotLocation: 'The SIoT_V2.zip file is located in: Programs → Tools folder.',
+                aiSiotFunction: 'SIoT is a simple IoT platform with main features:\n1. Data collection and storage\n2. Device management and monitoring\n3. MQTT message communication\n4. Visual data display\n5. Python programming support\nSuitable for IoT experiments and teaching scenarios.',
                 aiToolTitle: '⚡ AI Toolkit',
                 aiToolSummarize: '📝 Text Summary',
                 aiToolCode: '💻 Code Explanation',
@@ -1372,7 +1374,11 @@
             } else if (lowerMessage.includes('功能') || lowerMessage.includes('function') || lowerMessage.includes('feature')) {
                 addAiMessage(t('aiFeatures'));
             } else if (lowerMessage.includes('siot') || lowerMessage.includes('iot')) {
-                addAiMessage(t('aiSiotLocation'));
+                if (lowerMessage.includes('用') || lowerMessage.includes('干') || lowerMessage.includes('功能') || lowerMessage.includes('what') || lowerMessage.includes('use') || lowerMessage.includes('function')) {
+                    addAiMessage(t('aiSiotFunction'));
+                } else {
+                    addAiMessage(t('aiSiotLocation'));
+                }
             } else {
                 addAiMessage(t('aiError'));
             }
