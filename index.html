@@ -1374,10 +1374,19 @@
             } else if (lowerMessage.includes('功能') || lowerMessage.includes('function') || lowerMessage.includes('feature')) {
                 addAiMessage(t('aiFeatures'));
             } else if (lowerMessage.includes('siot') || lowerMessage.includes('iot')) {
+                lastTopic = 'siot';
                 if (lowerMessage.includes('用') || lowerMessage.includes('干') || lowerMessage.includes('功能') || lowerMessage.includes('what') || lowerMessage.includes('use') || lowerMessage.includes('function')) {
                     addAiMessage(t('aiSiotFunction'));
                 } else {
                     addAiMessage(t('aiSiotLocation'));
+                }
+            } else if ((lowerMessage.includes('它') || lowerMessage.includes('这个') || lowerMessage.includes('那个') || lowerMessage.includes('this') || lowerMessage.includes('that')) && lastTopic === 'siot') {
+                if (lowerMessage.includes('用') || lowerMessage.includes('干') || lowerMessage.includes('功能') || lowerMessage.includes('what') || lowerMessage.includes('use') || lowerMessage.includes('function')) {
+                    addAiMessage(t('aiSiotFunction'));
+                } else if (lowerMessage.includes('在哪') || lowerMessage.includes('位置') || lowerMessage.includes('where')) {
+                    addAiMessage(t('aiSiotLocation'));
+                } else {
+                    addAiMessage(t('aiSiotFunction'));
                 }
             } else {
                 addAiMessage(t('aiError'));
@@ -1393,6 +1402,7 @@
 
         let currentAiTool = 'text-summarize';
         let aiToolOpen = false;
+        let lastTopic = null;
 
         function toggleAiTool() {
             aiToolOpen = !aiToolOpen;
