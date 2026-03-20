@@ -389,6 +389,186 @@
             opacity: 0.5;
         }
 
+        .ai-assistant {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+        }
+
+        .ai-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .ai-chat {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            max-height: 500px;
+            background: var(--container-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .ai-chat.active {
+            display: flex;
+        }
+
+        .ai-chat-header {
+            padding: 16px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ai-chat-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-chat-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .ai-chat-close:hover {
+            background: var(--card-hover);
+            color: var(--text-primary);
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .ai-message,
+        .user-message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .ai-message {
+            background: var(--card-bg);
+            align-self: flex-start;
+            border-top-left-radius: 4px;
+        }
+
+        .user-message {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-top-right-radius: 4px;
+        }
+
+        .ai-message-content,
+        .user-message-content {
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .ai-chat-input {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-chat-input input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            background: var(--container-bg);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .ai-chat-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .ai-chat-input button {
+            padding: 10px 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-chat-input button:hover {
+            background: var(--primary-dark);
+        }
+
+        .quick-replies {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quick-reply {
+            padding: 6px 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-primary);
+        }
+
+        .quick-reply:hover {
+            background: var(--card-hover);
+            border-color: var(--primary);
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 20px 16px;
@@ -472,6 +652,27 @@
         </div>
     </div>
 
+    <div class="ai-assistant">
+        <button class="ai-button" onclick="toggleAiChat()" id="ai-button">🤖</button>
+        <div class="ai-chat" id="ai-chat">
+            <div class="ai-chat-header">
+                <div class="ai-chat-title">🤖 AI 助手</div>
+                <button class="ai-chat-close" onclick="toggleAiChat()">×</button>
+            </div>
+            <div class="ai-chat-messages" id="ai-messages"></div>
+            <div class="quick-replies">
+                <span class="quick-reply" onclick="sendQuickReply('如何下载文件？')">如何下载文件？</span>
+                <span class="quick-reply" onclick="sendQuickReply('如何切换语言？')">如何切换语言？</span>
+                <span class="quick-reply" onclick="sendQuickReply('如何访问网站？')">如何访问网站？</span>
+                <span class="quick-reply" onclick="sendQuickReply('这是什么网站？')">这是什么网站？</span>
+            </div>
+            <div class="ai-chat-input">
+                <input type="text" placeholder="输入你的问题..." id="ai-input" onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()">发送</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const i18n = {
             zh: {
@@ -491,7 +692,18 @@
                 gameDesc: '游戏文件',
                 programDesc: '实验程序',
                 exampleFile: '文本文件',
-                archiveFile: '压缩包'
+                archiveFile: '压缩包',
+                aiTitle: '🤖 AI 助手',
+                aiPlaceholder: '输入你的问题...',
+                aiSend: '发送',
+                aiGreeting: '你好！我是AI助手，有什么可以帮助你的吗？',
+                aiDownloadHelp: '点击文件旁边的"下载"按钮，然后点击"GitHub 下载"即可下载文件。',
+                aiLanguageHelp: '点击右上角的"EN/中文"按钮可以切换语言。',
+                aiVisitHelp: '可以通过以下方式访问网站：\n1. GitHub Pages: https://lshqwq.github.io/LSH/\n2. 本地服务器: http://localhost:8000',
+                aiAbout: '这是一个项目仓库网站，可以用来分享和下载文件。',
+                aiError: '抱歉，我没有理解你的问题。请尝试其他问题。',
+                aiThanks: '很高兴能帮到你！',
+                aiQuickReplies: ['如何下载文件？', '如何切换语言？', '如何访问网站？', '这是什么网站？']
             },
             en: {
                 home: '🏠 Home',
@@ -510,7 +722,18 @@
                 gameDesc: 'Game files',
                 programDesc: 'Programs',
                 exampleFile: 'Text file',
-                archiveFile: 'Archive'
+                archiveFile: 'Archive',
+                aiTitle: '🤖 AI Assistant',
+                aiPlaceholder: 'Type your question...',
+                aiSend: 'Send',
+                aiGreeting: 'Hello! I am your AI assistant. How can I help you today?',
+                aiDownloadHelp: 'Click the "Download" button next to the file, then click "GitHub Download" to download the file.',
+                aiLanguageHelp: 'Click the "EN/中文" button in the top right corner to switch languages.',
+                aiVisitHelp: 'You can visit the website in the following ways:\n1. GitHub Pages: https://lshqwq.github.io/LSH/\n2. Local server: http://localhost:8000',
+                aiAbout: 'This is a project repository website where you can share and download files.',
+                aiError: 'Sorry, I didn\'t understand your question. Please try another question.',
+                aiThanks: 'Happy to help!',
+                aiQuickReplies: ['How to download files?', 'How to switch language?', 'How to visit the website?', 'What is this website?']
             }
         };
 
@@ -562,6 +785,7 @@
             currentLang = currentLang === 'zh' ? 'en' : 'zh';
             document.getElementById('lang-btn').textContent = currentLang === 'zh' ? 'EN' : '中文';
             renderPage();
+            updateAiLanguage();
         }
 
         function toggleTheme() {
@@ -696,7 +920,90 @@
             }
         });
 
+        let aiChatOpen = false;
+
+        function toggleAiChat() {
+            aiChatOpen = !aiChatOpen;
+            const chat = document.getElementById('ai-chat');
+            if (aiChatOpen) {
+                chat.classList.add('active');
+                if (document.getElementById('ai-messages').children.length === 0) {
+                    addAiMessage(t('aiGreeting'));
+                }
+            } else {
+                chat.classList.remove('active');
+            }
+        }
+
+        function addAiMessage(message) {
+            const messages = document.getElementById('ai-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'ai-message';
+            messageDiv.innerHTML = '<div class="ai-message-content">' + message.replace(/\n/g, '<br>') + '</div>';
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function addUserMessage(message) {
+            const messages = document.getElementById('ai-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'user-message';
+            messageDiv.innerHTML = '<div class="user-message-content">' + message + '</div>';
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('ai-input');
+            const message = input.value.trim();
+            if (message) {
+                addUserMessage(message);
+                input.value = '';
+                setTimeout(() => {
+                    respondToMessage(message);
+                }, 500);
+            }
+        }
+
+        function sendQuickReply(reply) {
+            addUserMessage(reply);
+            setTimeout(() => {
+                respondToMessage(reply);
+            }, 500);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function respondToMessage(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('下载') || lowerMessage.includes('download')) {
+                addAiMessage(t('aiDownloadHelp'));
+            } else if (lowerMessage.includes('语言') || lowerMessage.includes('language')) {
+                addAiMessage(t('aiLanguageHelp'));
+            } else if (lowerMessage.includes('访问') || lowerMessage.includes('visit') || lowerMessage.includes('website')) {
+                addAiMessage(t('aiVisitHelp'));
+            } else if (lowerMessage.includes('什么') || lowerMessage.includes('what')) {
+                addAiMessage(t('aiAbout'));
+            } else if (lowerMessage.includes('谢谢') || lowerMessage.includes('thanks') || lowerMessage.includes('thank')) {
+                addAiMessage(t('aiThanks'));
+            } else {
+                addAiMessage(t('aiError'));
+            }
+        }
+
+        function updateAiLanguage() {
+            document.querySelector('.ai-chat-title').textContent = t('aiTitle');
+            document.getElementById('ai-input').placeholder = t('aiPlaceholder');
+            document.querySelector('.ai-chat-input button').textContent = t('aiSend');
+        }
+
         renderPage();
+        updateAiLanguage();
     </script>
 </body>
 </html>
