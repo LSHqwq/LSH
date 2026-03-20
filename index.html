@@ -1376,7 +1376,11 @@
                 html += '<div class="section-title">' + t('files') + '</div>';
                 html += '<div class="file-list">';
                 branch.files.forEach(file => {
-                    html += '<div class="file-item" onclick="showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')"><div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div><button class="download-btn" onclick="event.stopPropagation(); showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')">' + t('download') + '</button></div>';
+                    if (file.url === 'javascript:openGame()') {
+                        html += '<div class="file-item" onclick="openGame()"><div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div><button class="download-btn" onclick="event.stopPropagation(); openGame()">开始游戏</button></div>';
+                    } else {
+                        html += '<div class="file-item" onclick="showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')"><div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div><button class="download-btn" onclick="event.stopPropagation(); showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')">' + t('download') + '</button></div>';
+                    }
                 });
                 html += '</div>';
             }
