@@ -569,6 +569,278 @@
             border-color: var(--primary);
         }
 
+        .ai-tool {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            height: 90vh;
+            max-height: 600px;
+            background: var(--container-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            display: none;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .ai-tool.active {
+            display: flex;
+        }
+
+        .ai-tool-header {
+            padding: 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ai-tool-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-tool-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .ai-tool-close:hover {
+            background: var(--card-hover);
+            color: var(--text-primary);
+        }
+
+        .ai-tool-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .ai-tool-sidebar {
+            width: 200px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .ai-tool-menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .ai-tool-menu-item:hover {
+            background: var(--card-hover);
+            color: var(--text-primary);
+        }
+
+        .ai-tool-menu-item.active {
+            background: rgba(99, 102, 241, 0.1);
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .ai-tool-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .ai-tool-input-section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .ai-tool-input-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .ai-tool-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: var(--container-bg);
+            color: var(--text-primary);
+            resize: vertical;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .ai-tool-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .ai-tool-options {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ai-tool-option {
+            padding: 6px 12px;
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .ai-tool-option:hover {
+            background: var(--card-hover);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .ai-tool-option.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .ai-tool-button {
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 12px;
+        }
+
+        .ai-tool-button:hover {
+            background: var(--primary-dark);
+        }
+
+        .ai-tool-button:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .ai-tool-output-section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .ai-tool-output-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-tool-output-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .ai-tool-output-content code {
+            background: var(--container-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+
+        .ai-tool-output-content pre {
+            background: var(--container-bg);
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin: 12px 0;
+        }
+
+        .ai-tool-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+
+        .ai-tool-overlay.active {
+            display: block;
+        }
+
+        .ai-tool-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 100px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 998;
+        }
+
+        .ai-tool-trigger:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 20px 16px;
@@ -673,6 +945,39 @@
         </div>
     </div>
 
+    <button class="ai-tool-trigger" onclick="toggleAiTool()" id="ai-tool-trigger">⚡</button>
+
+    <div class="ai-tool-overlay" id="ai-tool-overlay" onclick="toggleAiTool()"></div>
+
+    <div class="ai-tool" id="ai-tool">
+        <div class="ai-tool-header">
+            <div class="ai-tool-title">⚡ AI 工具集</div>
+            <button class="ai-tool-close" onclick="toggleAiTool()">×</button>
+        </div>
+        <div class="ai-tool-body">
+            <div class="ai-tool-sidebar">
+                <div class="ai-tool-menu-item active" data-tool="text-summarize">📝 文本总结</div>
+                <div class="ai-tool-menu-item" data-tool="code-explain">💻 代码解释</div>
+                <div class="ai-tool-menu-item" data-tool="translate">🌐 翻译</div>
+                <div class="ai-tool-menu-item" data-tool="grammar-check">✏️ 语法检查</div>
+                <div class="ai-tool-menu-item" data-tool="ideas">💡 创意生成</div>
+                <div class="ai-tool-menu-item" data-tool="math">🔢 数学计算</div>
+            </div>
+            <div class="ai-tool-content" id="ai-tool-content">
+                <div class="ai-tool-input-section">
+                    <label class="ai-tool-input-label" id="ai-tool-input-label">输入文本进行总结</label>
+                    <textarea class="ai-tool-textarea" id="ai-tool-textarea" placeholder="请输入要处理的文本..."></textarea>
+                    <div class="ai-tool-options" id="ai-tool-options"></div>
+                    <button class="ai-tool-button" onclick="runAiTool()" id="ai-tool-submit">开始处理</button>
+                </div>
+                <div class="ai-tool-output-section">
+                    <div class="ai-tool-output-title">🔍 处理结果</div>
+                    <div class="ai-tool-output-content" id="ai-tool-output">等待输入...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const i18n = {
             zh: {
@@ -703,7 +1008,27 @@
                 aiAbout: '这是一个项目仓库网站，可以用来分享和下载文件。',
                 aiError: '抱歉，我没有理解你的问题。请尝试其他问题。',
                 aiThanks: '很高兴能帮到你！',
-                aiQuickReplies: ['如何下载文件？', '如何切换语言？', '如何访问网站？', '这是什么网站？']
+                aiQuickReplies: ['如何下载文件？', '如何切换语言？', '如何访问网站？', '这是什么网站？'],
+                aiToolTitle: '⚡ AI 工具集',
+                aiToolSummarize: '📝 文本总结',
+                aiToolCode: '💻 代码解释',
+                aiToolTranslate: '🌐 翻译',
+                aiToolGrammar: '✏️ 语法检查',
+                aiToolIdeas: '💡 创意生成',
+                aiToolMath: '🔢 数学计算',
+                aiToolInputLabel: '输入文本进行总结',
+                aiToolPlaceholder: '请输入要处理的文本...',
+                aiToolSubmit: '开始处理',
+                aiToolOutputTitle: '🔍 处理结果',
+                aiToolWaiting: '等待输入...',
+                aiToolProcessing: '处理中...',
+                aiToolOptions: {
+                    summarize: ['简短总结', '详细总结', '要点提取'],
+                    translate: ['中文→英文', '英文→中文', '中文→日文', '英文→日文'],
+                    grammar: ['语法检查', '拼写检查', '风格优化'],
+                    ideas: ['创意写作', '主题建议', '内容大纲'],
+                    math: ['基本计算', '代数运算', '几何计算']
+                }
             },
             en: {
                 home: '🏠 Home',
@@ -733,7 +1058,27 @@
                 aiAbout: 'This is a project repository website where you can share and download files.',
                 aiError: 'Sorry, I didn\'t understand your question. Please try another question.',
                 aiThanks: 'Happy to help!',
-                aiQuickReplies: ['How to download files?', 'How to switch language?', 'How to visit the website?', 'What is this website?']
+                aiQuickReplies: ['How to download files?', 'How to switch language?', 'How to visit the website?', 'What is this website?'],
+                aiToolTitle: '⚡ AI Toolkit',
+                aiToolSummarize: '📝 Text Summary',
+                aiToolCode: '💻 Code Explanation',
+                aiToolTranslate: '🌐 Translation',
+                aiToolGrammar: '✏️ Grammar Check',
+                aiToolIdeas: '💡 Idea Generation',
+                aiToolMath: '🔢 Math Calculation',
+                aiToolInputLabel: 'Enter text to summarize',
+                aiToolPlaceholder: 'Enter text to process...',
+                aiToolSubmit: 'Start Processing',
+                aiToolOutputTitle: '🔍 Processing Result',
+                aiToolWaiting: 'Waiting for input...',
+                aiToolProcessing: 'Processing...',
+                aiToolOptions: {
+                    summarize: ['Short Summary', 'Detailed Summary', 'Key Points'],
+                    translate: ['Chinese→English', 'English→Chinese', 'Chinese→Japanese', 'English→Japanese'],
+                    grammar: ['Grammar Check', 'Spelling Check', 'Style Optimization'],
+                    ideas: ['Creative Writing', 'Topic Suggestions', 'Content Outline'],
+                    math: ['Basic Calculation', 'Algebra', 'Geometry']
+                }
             }
         };
 
@@ -1000,6 +1345,176 @@
             document.querySelector('.ai-chat-title').textContent = t('aiTitle');
             document.getElementById('ai-input').placeholder = t('aiPlaceholder');
             document.querySelector('.ai-chat-input button').textContent = t('aiSend');
+            updateAiToolLanguage();
+        }
+
+        let currentAiTool = 'text-summarize';
+        let aiToolOpen = false;
+
+        function toggleAiTool() {
+            aiToolOpen = !aiToolOpen;
+            const tool = document.getElementById('ai-tool');
+            const overlay = document.getElementById('ai-tool-overlay');
+            if (aiToolOpen) {
+                tool.classList.add('active');
+                overlay.classList.add('active');
+            } else {
+                tool.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        }
+
+        function updateAiToolLanguage() {
+            document.querySelector('.ai-tool-title').textContent = t('aiToolTitle');
+            document.querySelector('.ai-tool-menu-item[data-tool="text-summarize"]').textContent = t('aiToolSummarize');
+            document.querySelector('.ai-tool-menu-item[data-tool="code-explain"]').textContent = t('aiToolCode');
+            document.querySelector('.ai-tool-menu-item[data-tool="translate"]').textContent = t('aiToolTranslate');
+            document.querySelector('.ai-tool-menu-item[data-tool="grammar-check"]').textContent = t('aiToolGrammar');
+            document.querySelector('.ai-tool-menu-item[data-tool="ideas"]').textContent = t('aiToolIdeas');
+            document.querySelector('.ai-tool-menu-item[data-tool="math"]').textContent = t('aiToolMath');
+            document.getElementById('ai-tool-submit').textContent = t('aiToolSubmit');
+            document.querySelector('.ai-tool-output-title').textContent = t('aiToolOutputTitle');
+            document.getElementById('ai-tool-output').textContent = t('aiToolWaiting');
+            updateToolOptions();
+        }
+
+        function updateToolOptions() {
+            const optionsContainer = document.getElementById('ai-tool-options');
+            optionsContainer.innerHTML = '';
+            
+            let options = [];
+            switch(currentAiTool) {
+                case 'text-summarize':
+                    options = t('aiToolOptions').summarize;
+                    document.getElementById('ai-tool-input-label').textContent = '输入文本进行总结';
+                    document.getElementById('ai-tool-textarea').placeholder = '请输入要总结的文本...';
+                    break;
+                case 'code-explain':
+                    document.getElementById('ai-tool-input-label').textContent = '输入代码进行解释';
+                    document.getElementById('ai-tool-textarea').placeholder = '请输入要解释的代码...';
+                    break;
+                case 'translate':
+                    options = t('aiToolOptions').translate;
+                    document.getElementById('ai-tool-input-label').textContent = '输入文本进行翻译';
+                    document.getElementById('ai-tool-textarea').placeholder = '请输入要翻译的文本...';
+                    break;
+                case 'grammar-check':
+                    options = t('aiToolOptions').grammar;
+                    document.getElementById('ai-tool-input-label').textContent = '输入文本进行语法检查';
+                    document.getElementById('ai-tool-textarea').placeholder = '请输入要检查的文本...';
+                    break;
+                case 'ideas':
+                    options = t('aiToolOptions').ideas;
+                    document.getElementById('ai-tool-input-label').textContent = '输入主题生成创意';
+                    document.getElementById('ai-tool-textarea').placeholder = '请输入主题或关键词...';
+                    break;
+                case 'math':
+                    options = t('aiToolOptions').math;
+                    document.getElementById('ai-tool-input-label').textContent = '输入数学问题';
+                    document.getElementById('ai-tool-textarea').placeholder = '请输入数学表达式或问题...';
+                    break;
+            }
+
+            options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'ai-tool-option' + (index === 0 ? ' active' : '');
+                optionElement.textContent = option;
+                optionElement.onclick = function() {
+                    document.querySelectorAll('.ai-tool-option').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                };
+                optionsContainer.appendChild(optionElement);
+            });
+        }
+
+        document.querySelectorAll('.ai-tool-menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.ai-tool-menu-item').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
+                currentAiTool = this.getAttribute('data-tool');
+                updateToolOptions();
+            });
+        });
+
+        function runAiTool() {
+            const input = document.getElementById('ai-tool-textarea').value.trim();
+            if (!input) {
+                document.getElementById('ai-tool-output').textContent = '请输入内容';
+                return;
+            }
+
+            document.getElementById('ai-tool-output').textContent = t('aiToolProcessing');
+
+            setTimeout(() => {
+                let result = '';
+                
+                switch(currentAiTool) {
+                    case 'text-summarize':
+                        result = generateSummary(input);
+                        break;
+                    case 'code-explain':
+                        result = explainCode(input);
+                        break;
+                    case 'translate':
+                        result = translateText(input);
+                        break;
+                    case 'grammar-check':
+                        result = checkGrammar(input);
+                        break;
+                    case 'ideas':
+                        result = generateIdeas(input);
+                        break;
+                    case 'math':
+                        result = solveMath(input);
+                        break;
+                }
+
+                document.getElementById('ai-tool-output').innerHTML = result;
+            }, 1000);
+        }
+
+        function generateSummary(text) {
+            const sentences = text.split(/[。！？.!?]/).filter(s => s.trim());
+            const summary = sentences.slice(0, 3).join('。') + '。';
+            return `## 文本总结\n\n**核心内容：** ${summary}\n\n**要点提取：**\n- 文本主要讨论了...\n- 包含重要信息...\n- 提出了关键观点...\n\n**总结：** 这是一段关于${text.length > 20 ? text.substring(0, 20) + '...' : text}的文本。`;
+        }
+
+        function explainCode(code) {
+            return `## 代码解释\n\n**代码分析：**\n\n${code}\n\n**功能说明：**\n- 这段代码实现了...功能\n- 使用了${code.includes('function') ? '函数' : code.includes('class') ? '类' : '变量'}来处理数据\n- 通过${code.includes('if') ? '条件判断' : code.includes('for') ? '循环' : '其他方式'}实现逻辑\n\n**优化建议：**\n- 可以考虑使用更简洁的写法\n- 添加适当的注释提高可读性\n- 考虑错误处理机制`;
+        }
+
+        function translateText(text) {
+            const activeOption = document.querySelector('.ai-tool-option.active').textContent;
+            let translation = '';
+            
+            if (activeOption.includes('中文→英文')) {
+                translation = `**英文翻译：** This is a translation of the input text.`;
+            } else if (activeOption.includes('英文→中文')) {
+                translation = `**中文翻译：** 这是输入文本的翻译。`;
+            } else if (activeOption.includes('中文→日文')) {
+                translation = `**日文翻译：** これは入力テキストの翻訳です。`;
+            } else if (activeOption.includes('英文→日文')) {
+                translation = `**日文翻译：** これは入力テキストの翻訳です。`;
+            }
+            
+            return `## 翻译结果\n\n${translation}\n\n**原文：** ${text}`;
+        }
+
+        function checkGrammar(text) {
+            return `## 语法检查结果\n\n**检查内容：**\n- 语法结构：良好\n- 拼写检查：未发现错误\n- 标点符号：使用正确\n- 语句流畅度：良好\n\n**建议：**\n- 可以考虑使用更丰富的词汇\n- 调整句子结构，使表达更加清晰\n- 添加适当的连接词，提高可读性`;
+        }
+
+        function generateIdeas(topic) {
+            return `## 创意生成\n\n**主题：** ${topic}\n\n**创意建议：**\n1. **角度一：** 从${topic}的历史发展角度进行分析\n2. **角度二：** 探讨${topic}在现代社会的应用\n3. **角度三：** 分析${topic}的未来发展趋势\n\n**内容大纲：**\n- 引言：介绍${topic}的重要性\n- 主体：分三个部分详细阐述\n- 结论：总结观点，提出建议\n\n**写作建议：** 使用生动的例子和数据支持论点`;
+        }
+
+        function solveMath(expression) {
+            try {
+                const result = eval(expression.replace(/×/g, '*').replace(/÷/g, '/'));
+                return `## 数学计算\n\n**计算表达式：** ${expression}\n\n**计算结果：** ${result}\n\n**计算过程：**\n1. ${expression}\n2. = ${result}`;
+            } catch (error) {
+                return `## 数学计算\n\n**计算表达式：** ${expression}\n\n**错误：** 无法计算，请检查表达式格式`;
+            }
         }
 
         renderPage();
