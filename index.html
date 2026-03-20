@@ -1009,6 +1009,10 @@
                 aiError: '抱歉，我没有理解你的问题。请尝试其他问题。',
                 aiThanks: '很高兴能帮到你！',
                 aiQuickReplies: ['如何下载文件？', '如何切换语言？', '如何访问网站？', '这是什么网站？'],
+                aiHello: '你好！我是AI助手，有什么可以帮助你的吗？',
+                aiWhoAmI: '我是AI助手，可以帮你解答关于这个网站的问题。',
+                aiHelp: '我可以帮你解答关于下载文件、切换语言、访问网站等问题。请直接提问吧！',
+                aiFeatures: '这个网站主要功能包括：文件下载、多语言支持、深色模式、AI助手和AI工具集。',
                 aiToolTitle: '⚡ AI 工具集',
                 aiToolSummarize: '📝 文本总结',
                 aiToolCode: '💻 代码解释',
@@ -1059,6 +1063,10 @@
                 aiError: 'Sorry, I didn\'t understand your question. Please try another question.',
                 aiThanks: 'Happy to help!',
                 aiQuickReplies: ['How to download files?', 'How to switch language?', 'How to visit the website?', 'What is this website?'],
+                aiHello: 'Hello! I am your AI assistant. How can I help you today?',
+                aiWhoAmI: 'I am an AI assistant that can help answer questions about this website.',
+                aiHelp: 'I can help answer questions about downloading files, switching languages, visiting the website, etc. Please ask directly!',
+                aiFeatures: 'This website includes features like: file downloads, multilingual support, dark mode, AI assistant, and AI toolkit.',
                 aiToolTitle: '⚡ AI Toolkit',
                 aiToolSummarize: '📝 Text Summary',
                 aiToolCode: '💻 Code Explanation',
@@ -1337,16 +1345,30 @@
         function respondToMessage(message) {
             const lowerMessage = message.toLowerCase();
             
-            if (lowerMessage.includes('下载') || lowerMessage.includes('download')) {
+            const downloadKeywords = ['下载', 'download', '保存', 'save', '获取', 'get', '怎么下载', '如何下载', '怎样下载'];
+            const languageKeywords = ['语言', 'language', '切换', 'change', '英文', 'english', '中文', 'chinese', '切换语言', '如何切换', '怎样切换'];
+            const visitKeywords = ['访问', 'visit', '网站', 'website', '网址', 'url', '怎么访问', '如何访问', '怎样访问', '打开', 'open'];
+            const aboutKeywords = ['什么', 'what', '介绍', 'introduce', '这是', 'this is', '干嘛', 'what is', '是什么', 'what\'s'];
+            const thanksKeywords = ['谢谢', 'thanks', 'thank', '感谢', 'grateful', '感恩', '感谢你'];
+            
+            if (downloadKeywords.some(keyword => lowerMessage.includes(keyword))) {
                 addAiMessage(t('aiDownloadHelp'));
-            } else if (lowerMessage.includes('语言') || lowerMessage.includes('language')) {
+            } else if (languageKeywords.some(keyword => lowerMessage.includes(keyword))) {
                 addAiMessage(t('aiLanguageHelp'));
-            } else if (lowerMessage.includes('访问') || lowerMessage.includes('visit') || lowerMessage.includes('website')) {
+            } else if (visitKeywords.some(keyword => lowerMessage.includes(keyword))) {
                 addAiMessage(t('aiVisitHelp'));
-            } else if (lowerMessage.includes('什么') || lowerMessage.includes('what')) {
+            } else if (aboutKeywords.some(keyword => lowerMessage.includes(keyword))) {
                 addAiMessage(t('aiAbout'));
-            } else if (lowerMessage.includes('谢谢') || lowerMessage.includes('thanks') || lowerMessage.includes('thank')) {
+            } else if (thanksKeywords.some(keyword => lowerMessage.includes(keyword))) {
                 addAiMessage(t('aiThanks'));
+            } else if (lowerMessage.includes('你好') || lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('嘿')) {
+                addAiMessage(t('aiHello'));
+            } else if (lowerMessage.includes('你是谁') || lowerMessage.includes('who are you') || lowerMessage.includes('what are you')) {
+                addAiMessage(t('aiWhoAmI'));
+            } else if (lowerMessage.includes('帮助') || lowerMessage.includes('help') || lowerMessage.includes('assist')) {
+                addAiMessage(t('aiHelp'));
+            } else if (lowerMessage.includes('功能') || lowerMessage.includes('function') || lowerMessage.includes('feature')) {
+                addAiMessage(t('aiFeatures'));
             } else {
                 addAiMessage(t('aiError'));
             }
