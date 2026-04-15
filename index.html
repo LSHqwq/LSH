@@ -1768,7 +1768,10 @@
                     default: 'arcade',
                     arcade: {
                         gravity: { y: 1000 },
-                        debug: false
+                        debug: false,
+                        // 优化碰撞检测
+                        overlapBias: 10,
+                        tileBias: 4
                     }
                 },
                 scene: {
@@ -1784,17 +1787,40 @@
             gameScene = this;
             
             const sky = this.add.rectangle(300, 150, 600, 300, 0x87CEEB);
+            
+            // 创建地面
             const ground = this.physics.add.staticGroup();
-            ground.create(300, 380, '').setScale(2).refreshBody();
+            const groundShape = this.add.rectangle(0, 0, 600, 40, 0x8B4513).setOrigin(0, 0).setVisible(false);
+            this.textures.addCanvas('ground', groundShape.canvas);
+            ground.create(300, 380, 'ground').setScale(2).refreshBody();
 
-            this.player = this.physics.add.sprite(100, 300, '');
+            // 创建玩家
+            const playerShape = this.add.rectangle(0, 0, 40, 60, 0xFF6B6B).setOrigin(0.5, 1).setVisible(false);
+            this.textures.addCanvas('player', playerShape.canvas);
+            this.player = this.physics.add.sprite(100, 300, 'player');
             this.player.setCollideWorldBounds(true);
-            this.player.setScale(0.5);
             this.player.body.setGravityY(1000);
-            this.player.setTint(0xFF6B6B);
+            // 设置玩家物理属性
+            this.player.body.setSize(30, 50);
+            this.player.body.setOffset(5, 10);
 
+            // 创建障碍物和金币组
             this.obstacles = this.physics.add.group();
             this.coins = this.physics.add.group();
+
+            // 创建障碍物形状
+            const obstacleShape1 = this.add.rectangle(0, 0, 30, 60, 0x8B4513).setOrigin(0.5, 1).setVisible(false);
+            this.textures.addCanvas('obstacle1', obstacleShape1.canvas);
+            
+            const obstacleShape2 = this.add.rectangle(0, 0, 60, 30, 0x654321).setOrigin(0.5, 1).setVisible(false);
+            this.textures.addCanvas('obstacle2', obstacleShape2.canvas);
+            
+            const obstacleShape3 = this.add.rectangle(0, 0, 20, 80, 0xA0522D).setOrigin(0.5, 1).setVisible(false);
+            this.textures.addCanvas('obstacle3', obstacleShape3.canvas);
+
+            // 创建金币形状
+            const coinShape = this.add.circle(0, 0, 15, 0xFFD700).setVisible(false);
+            this.textures.addCanvas('coin', coinShape.canvas);
 
             this.physics.add.collider(this.player, ground);
             this.physics.add.collider(this.player, this.obstacles, hitObstacle, null, this);
@@ -1829,10 +1855,17 @@
             score = 0;
             gameSpeed = 5;
             if (gameScene) {
+                // 清空障碍物和金币
                 gameScene.obstacles.clear(true, true);
                 gameScene.coins.clear(true, true);
+                
+                // 重置玩家位置
                 gameScene.player.setPosition(100, 300);
+                gameScene.player.setVelocity(0, 0);
+                
+                // 重置分数和速度显示
                 gameScene.scoreText.setText('得分: 0');
+                gameScene.speedText.setText('速度: 1.0x');
             }
             document.getElementById('game-start').textContent = '重新开始';
         }
@@ -1880,23 +1913,26 @@
                     let obstacle;
                     
                     if (obstacleType === 0) {
-                        obstacle = gameScene.obstacles.create(650, 350, '').setScale(0.3, 0.6);
-                        obstacle.setTint(0x8B4513);
+                        obstacle = gameScene.obstacles.create(650, 350, 'obstacle1');
+                        obstacle.body.setSize(25, 55);
+                        obstacle.body.setOffset(2.5, 5);
                     } else if (obstacleType === 1) {
-                        obstacle = gameScene.obstacles.create(650, 370, '').setScale(0.6, 0.3);
-                        obstacle.setTint(0x654321);
+                        obstacle = gameScene.obstacles.create(650, 370, 'obstacle2');
+                        obstacle.body.setSize(55, 25);
+                        obstacle.body.setOffset(2.5, 5);
                     } else {
-                        obstacle = gameScene.obstacles.create(650, 330, '').setScale(0.2, 0.8);
-                        obstacle.setTint(0xA0522D);
+                        obstacle = gameScene.obstacles.create(650, 330, 'obstacle3');
+                        obstacle.body.setSize(15, 75);
+                        obstacle.body.setOffset(2.5, 5);
                     }
                     
                     obstacle.setImmovable(true);
                 }
 
                 if (Phaser.Math.Between(0, 200)< 1 && gameScene.coins.getChildren().length < 2) {
-                    const coin = gameScene.coins.create(650, Phaser.Math.Between(200, 300), '');
-                    coin.setScale(0.15);
-                    coin.setTint(0xFFD700);
+                    const coin = gameScene.coins.create(650, Phaser.Math.Between(200, 300), 'coin');
+                    coin.body.setSize(20, 20);
+                    coin.body.setOffset(5, 5);
                 }
             }
         }
