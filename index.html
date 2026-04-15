@@ -1790,14 +1790,13 @@
             
             // 创建地面
             const ground = this.physics.add.staticGroup();
-            const groundShape = this.add.rectangle(0, 0, 600, 40, 0x8B4513).setOrigin(0, 0).setVisible(false);
-            this.textures.addCanvas('ground', groundShape.canvas);
-            ground.create(300, 380, 'ground').setScale(2).refreshBody();
+            // 直接创建矩形作为地面
+            const groundSprite = this.add.rectangle(300, 380, 1200, 80, 0x8B4513);
+            this.physics.add.existing(groundSprite, true);
 
             // 创建玩家
-            const playerShape = this.add.rectangle(0, 0, 40, 60, 0xFF6B6B).setOrigin(0.5, 1).setVisible(false);
-            this.textures.addCanvas('player', playerShape.canvas);
-            this.player = this.physics.add.sprite(100, 300, 'player');
+            this.player = this.add.rectangle(100, 300, 40, 60, 0xFF6B6B);
+            this.physics.add.existing(this.player);
             this.player.setCollideWorldBounds(true);
             this.player.body.setGravityY(1000);
             // 设置玩家物理属性
@@ -1808,21 +1807,7 @@
             this.obstacles = this.physics.add.group();
             this.coins = this.physics.add.group();
 
-            // 创建障碍物形状
-            const obstacleShape1 = this.add.rectangle(0, 0, 30, 60, 0x8B4513).setOrigin(0.5, 1).setVisible(false);
-            this.textures.addCanvas('obstacle1', obstacleShape1.canvas);
-            
-            const obstacleShape2 = this.add.rectangle(0, 0, 60, 30, 0x654321).setOrigin(0.5, 1).setVisible(false);
-            this.textures.addCanvas('obstacle2', obstacleShape2.canvas);
-            
-            const obstacleShape3 = this.add.rectangle(0, 0, 20, 80, 0xA0522D).setOrigin(0.5, 1).setVisible(false);
-            this.textures.addCanvas('obstacle3', obstacleShape3.canvas);
-
-            // 创建金币形状
-            const coinShape = this.add.circle(0, 0, 15, 0xFFD700).setVisible(false);
-            this.textures.addCanvas('coin', coinShape.canvas);
-
-            this.physics.add.collider(this.player, ground);
+            this.physics.add.collider(this.player, groundSprite);
             this.physics.add.collider(this.player, this.obstacles, hitObstacle, null, this);
             this.physics.add.overlap(this.player, this.coins, collectCoin, null, this);
 
@@ -1894,45 +1879,49 @@
                 gameScene.scoreText.setText(`得分: ${Math.floor(score)}`);
                 gameScene.speedText.setText(`速度: ${(gameSpeed / 5).toFixed(1)}x`);
 
+                // 移动障碍物
                 gameScene.obstacles.getChildren().forEach(obstacle => {
                     obstacle.x -= gameSpeed;
-                    if (obstacle.x< -50) {
+                    if (obstacle.x < -50) {
                         obstacle.destroy();
                     }
                 });
 
-                gameScene.coins.getChildren().forEach(coin =>{
+                // 移动金币
+                gameScene.coins.getChildren().forEach(coin => {
                     coin.x -= gameSpeed;
                     if (coin.x < -20) {
                         coin.destroy();
                     }
                 });
 
-                if (Phaser.Math.Between(0, 100)< 1 && gameScene.obstacles.getChildren().length < 3) {
+                // 生成障碍物
+                if (Phaser.Math.Between(0, 100) < 2 && gameScene.obstacles.getChildren().length < 3) {
                     const obstacleType = Phaser.Math.Between(0, 2);
                     let obstacle;
                     
                     if (obstacleType === 0) {
-                        obstacle = gameScene.obstacles.create(650, 350, 'obstacle1');
-                        obstacle.body.setSize(25, 55);
-                        obstacle.body.setOffset(2.5, 5);
+                        // 创建高障碍物
+                        obstacle = gameScene.add.rectangle(650, 350, 30, 60, 0x8B4513);
                     } else if (obstacleType === 1) {
-                        obstacle = gameScene.obstacles.create(650, 370, 'obstacle2');
-                        obstacle.body.setSize(55, 25);
-                        obstacle.body.setOffset(2.5, 5);
+                        // 创建宽障碍物
+                        obstacle = gameScene.add.rectangle(650, 370, 60, 30, 0x654321);
                     } else {
-                        obstacle = gameScene.obstacles.create(650, 330, 'obstacle3');
-                        obstacle.body.setSize(15, 75);
-                        obstacle.body.setOffset(2.5, 5);
+                        // 创建细高障碍物
+                        obstacle = gameScene.add.rectangle(650, 330, 20, 80, 0xA0522D);
                     }
                     
-                    obstacle.setImmovable(true);
+                    gameScene.physics.add.existing(obstacle);
+                    obstacle.body.setImmovable(true);
+                    gameScene.obstacles.add(obstacle);
                 }
 
-                if (Phaser.Math.Between(0, 200)< 1 && gameScene.coins.getChildren().length < 2) {
-                    const coin = gameScene.coins.create(650, Phaser.Math.Between(200, 300), 'coin');
-                    coin.body.setSize(20, 20);
-                    coin.body.setOffset(5, 5);
+                // 生成金币
+                if (Phaser.Math.Between(0, 200) < 2 && gameScene.coins.getChildren().length < 2) {
+                    // 创建金币
+                    const coin = gameScene.add.circle(650, Phaser.Math.Between(200, 300), 15, 0xFFD700);
+                    gameScene.physics.add.existing(coin);
+                    gameScene.coins.add(coin);
                 }
             }
         }
