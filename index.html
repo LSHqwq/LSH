@@ -14,6 +14,8 @@
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --secondary-dark: #059669;
             --bg-color: #f8fafc;
             --container-bg: #ffffff;
             --text-primary: #1e293b;
@@ -29,6 +31,8 @@
         [data-theme="dark"] {
             --primary: #818cf8;
             --primary-dark: #6366f1;
+            --secondary: #34d399;
+            --secondary-dark: #10b981;
             --bg-color: #0f172a;
             --container-bg: #1e293b;
             --text-primary: #f1f5f9;
@@ -281,6 +285,56 @@
         .download-btn:hover {
             background: var(--primary-dark);
             transform: scale(1.02);
+        }
+
+        .file-item-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .learn-more-btn {
+            background: var(--secondary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .learn-more-btn:hover {
+            background: var(--secondary-dark);
+            transform: scale(1.02);
+        }
+
+        .file-detail {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .file-detail.active {
+            max-height: 500px;
+        }
+
+        .file-detail-content {
+            padding: 16px;
+            margin-top: 12px;
+            background: var(--card-hover);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-primary);
         }
 
         .modal {
@@ -1122,6 +1176,8 @@
                 branches: '分支',
                 files: '文件',
                 download: '下载',
+                learnMore: '了解更多',
+                closeDetail: '收起',
                 downloadTitle: '下载文件',
                 downloadText: '将在 GitHub 中打开此文件',
                 cancel: '取消',
@@ -1178,6 +1234,8 @@
                 branches: 'Branches',
                 files: 'Files',
                 download: 'Download',
+                learnMore: 'Learn More',
+                closeDetail: 'Close',
                 downloadTitle: 'Download File',
                 downloadText: 'Will open this file on GitHub',
                 cancel: 'Cancel',
@@ -1271,12 +1329,14 @@
                             name: 'SIoT_V2.zip',
                             icon: '📦',
                             desc: { zh: 'SIoT物联网平台', en: 'SIoT IoT Platform' },
+                            detail: { zh: 'SIoT是一个简单易用的物联网平台，主要功能包括：\n\n📊 **数据采集与存储**\n- 实时采集传感器数据\n- 支持多种数据类型的存储\n\n🔌 **设备管理**\n- 可视化设备状态监控\n- 设备在线/离线状态管理\n\n📨 **MQTT通信**\n- 支持MQTT协议通信\n- 实现设备与服务器的数据交换\n\n📈 **数据可视化**\n- 实时数据图表展示\n- 历史数据查询与分析\n\n🐍 **Python编程控制**\n- 提供Python SDK\n- 方便进行二次开发\n\n🎓 **适用场景**\n- 物联网教学实验\n- 创客项目开发\n- 原型系统快速搭建', en: 'SIoT is an easy-to-use IoT platform with the following features:\n\n📊 **Data Collection & Storage**\n- Real-time sensor data acquisition\n- Support for multiple data types\n\n🔌 **Device Management**\n- Visual device status monitoring\n- Online/offline status management\n\n📨 **MQTT Communication**\n- MQTT protocol support\n- Data exchange between devices and server\n\n📈 **Data Visualization**\n- Real-time data charts\n- Historical data query and analysis\n\n🐍 **Python Programming**\n- Python SDK provided\n- Easy for secondary development\n\n🎓 **Use Cases**\n- IoT teaching experiments\n- Maker project development\n- Rapid prototyping' },
                             url: 'https://github.com/LSHqwq/LSH/raw/main/SIoT_V2.zip'
                         },
                         {
                             name: '图像识别分类器.zip',
                             icon: '🖼️',
                             desc: { zh: '图像识别分类器工具', en: 'Image Recognition Classifier' },
+                            detail: { zh: '图像识别分类器是一个基于深度学习的图像分类工具，主要功能包括：\n\n🖼️ **图像分类**\n- 支持多种图像格式（JPG、PNG、BMP等）\n- 快速准确的图像识别\n\n🤖 **深度学习模型**\n- 内置预训练模型\n- 支持模型 fine-tuning\n\n📁 **批量处理**\n- 支持批量图像分类\n- 自动生成分类报告\n\n⚙️ **可定制化**\n- 可自定义分类类别\n- 支持导入自定义模型\n\n💻 **技术特点**\n- 基于Python开发\n- 使用TensorFlow/Keras框架\n- 提供简洁的命令行接口\n\n📦 **文件说明**\n- 包含完整的源代码\n- 附带使用文档和示例', en: 'Image Recognition Classifier is a deep learning-based image classification tool with the following features:\n\n🖼️ **Image Classification**\n- Supports multiple image formats (JPG, PNG, BMP, etc.)\n- Fast and accurate image recognition\n\n🤖 **Deep Learning Model**\n- Built-in pre-trained models\n- Support for model fine-tuning\n\n📁 **Batch Processing**\n- Batch image classification support\n- Automatic classification report generation\n\n⚙️ **Customization**\n- Customizable classification categories\n- Support for importing custom models\n\n💻 **Technical Features**\n- Developed based on Python\n- Using TensorFlow/Keras framework\n- Provides a simple command-line interface\n\n📦 **File Contents**\n- Complete source code included\n- User documentation and examples provided' },
                             url: 'https://github.com/LSHqwq/LSH/raw/main/图像识别分类器.zip'
                         }
                     ]
@@ -1359,8 +1419,17 @@
             if (branch.files.length > 0) {
                 html += '<div class="section-title">' + t('files') + '</div>';
                 html += '<div class="file-list">';
-                branch.files.forEach(file => {
-                    html += '<div class="file-item" onclick="showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')"><div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div><button class="download-btn" onclick="event.stopPropagation(); showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')">' + t('download') + '</button></div>';
+                branch.files.forEach((file, index) => {
+                    const detailId = 'file-detail-' + index;
+                    html += '<div class="file-item">';
+                    html += '<div class="file-item-main" onclick="toggleDetail(\'' + detailId + '\')">';
+                    html += '<div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div>';
+                    html += '<div class="file-actions"><button class="learn-more-btn" onclick="event.stopPropagation(); toggleDetail(\'' + detailId + '\')">' + t('learnMore') + '</button><button class="download-btn" onclick="event.stopPropagation(); showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')">' + t('download') + '</button></div>';
+                    html += '</div>';
+                    if (file.detail) {
+                        html += '<div class="file-detail" id="' + detailId + '"><div class="file-detail-content">' + file.detail[currentLang].replace(/\n/g, '<br>') + '</div></div>';
+                    }
+                    html += '</div>';
                 });
                 html += '</div>';
             }
@@ -1375,6 +1444,17 @@
         function openBranch(branchName) {
             data.currentPath.push(branchName);
             renderPage();
+        }
+
+        function toggleDetail(detailId) {
+            const detail = document.getElementById(detailId);
+            if (detail) {
+                detail.classList.toggle('active');
+                const btn = detail.previousElementSibling.querySelector('.learn-more-btn');
+                if (btn) {
+                    btn.textContent = detail.classList.contains('active') ? t('closeDetail') : t('learnMore');
+                }
+            }
         }
 
         function searchFiles() {
