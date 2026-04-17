@@ -317,24 +317,101 @@
             transform: scale(1.02);
         }
 
-        .file-detail {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
+        
+
+        .detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
         }
 
-        .file-detail.active {
-            max-height: 500px;
+        .detail-modal-content {
+            background: var(--container-bg);
+            padding: 32px;
+            border-radius: 16px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
         }
 
-        .file-detail-content {
-            padding: 16px;
-            margin-top: 12px;
-            background: var(--card-hover);
-            border-radius: 8px;
-            font-size: 0.85rem;
-            line-height: 1.6;
+        .detail-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-modal-header h3 {
+            margin: 0;
             color: var(--text-primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .detail-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .detail-modal-close:hover {
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        .detail-modal-body {
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .detail-modal-body br {
+            margin-bottom: 8px;
+        }
+
+        .detail-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .detail-modal-btn {
+            background: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .detail-modal-btn:hover {
+            background: var(--secondary-dark);
+            transform: scale(1.02);
         }
 
         .modal {
@@ -1112,6 +1189,19 @@
         </div>
     </div>
 
+    <div class="detail-modal" id="detail-modal">
+        <div class="detail-modal-content">
+            <div class="detail-modal-header">
+                <h3 id="detail-modal-title">文件详情</h3>
+                <button class="detail-modal-close" onclick="closeDetailModal()">×</button>
+            </div>
+            <div class="detail-modal-body" id="detail-modal-body"></div>
+            <div class="detail-modal-footer">
+                <button class="detail-modal-btn" onclick="closeDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
     <div class="ai-assistant">
         <button class="ai-button" onclick="toggleAiChat()" id="ai-button">🤖</button>
         <div class="ai-chat" id="ai-chat">
@@ -1420,15 +1510,11 @@
                 html += '<div class="section-title">' + t('files') + '</div>';
                 html += '<div class="file-list">';
                 branch.files.forEach((file, index) => {
-                    const detailId = 'file-detail-' + index;
                     html += '<div class="file-item">';
-                    html += '<div class="file-item-main" onclick="toggleDetail(\'' + detailId + '\')">';
+                    html += '<div class="file-item-main">';
                     html += '<div class="file-info"><span class="file-icon">' + file.icon + '</span><div><div class="file-name">' + file.name + '</div><div class="file-desc">' + file.desc[currentLang] + '</div></div></div>';
-                    html += '<div class="file-actions"><button class="learn-more-btn" onclick="event.stopPropagation(); toggleDetail(\'' + detailId + '\')">' + t('learnMore') + '</button><button class="download-btn" onclick="event.stopPropagation(); showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')">' + t('download') + '</button></div>';
+                    html += '<div class="file-actions"><button class="learn-more-btn" onclick="event.stopPropagation(); showDetailModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.detail[currentLang] + '\')">' + t('learnMore') + '</button><button class="download-btn" onclick="event.stopPropagation(); showDownloadModal(\'' + file.name + '\', \'' + file.icon + '\', \'' + file.url + '\')">' + t('download') + '</button></div>';
                     html += '</div>';
-                    if (file.detail) {
-                        html += '<div class="file-detail" id="' + detailId + '"><div class="file-detail-content">' + file.detail[currentLang].replace(/\n/g, '<br>') + '</div></div>';
-                    }
                     html += '</div>';
                 });
                 html += '</div>';
@@ -1446,15 +1532,21 @@
             renderPage();
         }
 
-        function toggleDetail(detailId) {
-            const detail = document.getElementById(detailId);
-            if (detail) {
-                detail.classList.toggle('active');
-                const btn = detail.previousElementSibling.querySelector('.learn-more-btn');
-                if (btn) {
-                    btn.textContent = detail.classList.contains('active') ? t('closeDetail') : t('learnMore');
-                }
-            }
+        function showDetailModal(fileName, fileIcon, detailContent) {
+            const modal = document.getElementById('detail-modal');
+            const title = document.getElementById('detail-modal-title');
+            const body = document.getElementById('detail-modal-body');
+            
+            title.innerHTML = fileIcon + ' ' + fileName;
+            body.innerHTML = detailContent.replace(/\n/g, '<br>');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetailModal() {
+            const modal = document.getElementById('detail-modal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
 
         function searchFiles() {
