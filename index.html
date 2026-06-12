@@ -1383,14 +1383,7 @@
                     name: '主分支',
                     icon: '�',
                     desc: { zh: '主分支 - 稳定版本', en: 'Main branch - Stable' },
-                    branches: ['视频', '游戏文件', '实验程序'],
-                    files: []
-                },
-                '视频': {
-                    name: '视频',
-                    icon: '🎬',
-                    desc: { zh: '视频文件', en: 'Video files' },
-                    branches: [],
+                    branches: ['游戏文件', '编程'],
                     files: []
                 },
                 '游戏文件': {
@@ -1402,11 +1395,11 @@
 
                     ]
                 },
-                '实验程序': {
-                    name: '实验程序',
+                '编程': {
+                    name: '编程',
                     icon: '💻',
-                    desc: { zh: '实验程序', en: 'Programs' },
-                    branches: ['工具'],
+                    desc: { zh: '编程资源', en: 'Programming' },
+                    branches: ['工具', '工具库'],
                     files: []
                 },
                 '工具': {
@@ -1428,6 +1421,28 @@
                             desc: { zh: '图像识别分类器工具', en: 'Image Recognition Classifier' },
                             detail: { zh: '图像识别分类器是一个基于深度学习的图像分类工具，主要功能包括：\n\n🖼️ **图像分类**\n- 支持多种图像格式（JPG、PNG、BMP等）\n- 快速准确的图像识别\n\n🤖 **深度学习模型**\n- 内置预训练模型\n- 支持模型 fine-tuning\n\n📁 **批量处理**\n- 支持批量图像分类\n- 自动生成分类报告\n\n⚙️ **可定制化**\n- 可自定义分类类别\n- 支持导入自定义模型\n\n💻 **技术特点**\n- 基于Python开发\n- 使用TensorFlow/Keras框架\n- 提供简洁的命令行接口\n\n📦 **文件说明**\n- 包含完整的源代码\n- 附带使用文档和示例', en: 'Image Recognition Classifier is a deep learning-based image classification tool with the following features:\n\n🖼️ **Image Classification**\n- Supports multiple image formats (JPG, PNG, BMP, etc.)\n- Fast and accurate image recognition\n\n🤖 **Deep Learning Model**\n- Built-in pre-trained models\n- Support for model fine-tuning\n\n📁 **Batch Processing**\n- Batch image classification support\n- Automatic classification report generation\n\n⚙️ **Customization**\n- Customizable classification categories\n- Support for importing custom models\n\n💻 **Technical Features**\n- Developed based on Python\n- Using TensorFlow/Keras framework\n- Provides a simple command-line interface\n\n📦 **File Contents**\n- Complete source code included\n- User documentation and examples provided' },
                             url: 'https://github.com/LSHqwq/LSH/raw/main/图像识别分类器.zip'
+                        }
+                    ]
+                },
+                '工具库': {
+                    name: '工具库',
+                    icon: '📚',
+                    desc: { zh: 'MicroPython工具库', en: 'MicroPython Libraries' },
+                    branches: [],
+                    files: [
+                        {
+                            name: 'net',
+                            icon: '🌐',
+                            desc: { zh: '网络工具库', en: 'Network Library' },
+                            detail: { zh: 'MicroPython网络工具库，提供网络连接和通信功能。\n\n主要功能：\n- 网络连接管理\n- TCP/UDP通信\n- HTTP请求处理\n- 网络配置管理', en: 'MicroPython network library providing network connection and communication features.\n\nMain features:\n- Network connection management\n- TCP/UDP communication\n- HTTP request handling\n- Network configuration management' },
+                            url: 'https://github.com/LSHqwq/LSH/raw/main/net/net.py'
+                        },
+                        {
+                            name: 'pingwr',
+                            icon: '📡',
+                            desc: { zh: 'Ping工具库', en: 'Ping Library' },
+                            detail: { zh: 'MicroPython Ping工具库，用于网络延迟检测。\n\n主要功能：\n- ICMP Ping测试\n- 网络延迟测量\n- 主机可达性检测\n- 网络质量评估', en: 'MicroPython Ping library for network latency detection.\n\nMain features:\n- ICMP Ping testing\n- Network latency measurement\n- Host reachability detection\n- Network quality assessment' },
+                            url: 'https://github.com/LSHqwq/LSH/raw/main/pingwr/pingwr.py'
                         }
                     ]
                 }
